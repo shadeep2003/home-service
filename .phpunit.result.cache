@@ -1,0 +1,1 @@
+{"version":2,"defects":[],"times":{"Tests\\Feature\\PublicPagesTest::test_public_pages_and_auth_forms_render_without_database_queries":0.061,"Tests\\Feature\\PublicPagesTest::test_homepage_discloses_demo_content_and_links_to_real_public_destinations":0.028,"Tests\\Feature\\PublicPagesTest::test_provider_signup_link_preserves_provider_selection":0.004}}

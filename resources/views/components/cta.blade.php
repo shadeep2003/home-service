@@ -1,0 +1,1 @@
+<section class="cta"><div><p class="eyebrow">YOUR HOME, IN GOOD HANDS</p><h2>Need help around your home?</h2><p>Discover the services designed to make everyday life easier.</p></div><x-button :href="route('services')">Find a Service <span aria-hidden="true">↗</span></x-button></section>

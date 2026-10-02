@@ -1,0 +1,7 @@
+@extends('layouts.app')
+@section('title', 'About Us')
+@section('content')
+<section class="page-intro"><p class="eyebrow">THE IDEA BEHIND HOMESERVICES</p><h1>Better connections.<br><span>Better cared-for homes.</span></h1><p class="lead">We believe finding help for your home should feel straightforward, personal and reassuring.</p></section>
+<section class="about-story"><div class="story-art"><span aria-hidden="true">⌂</span><p>A little help can<br>make a big difference.</p></div><div><x-section-heading eyebrow="OUR PURPOSE" title="Connecting homes with skilled hands" /><p>HomeServices is a home services booking platform in development. Our vision is to connect householders with professionals across electrical work, plumbing, cleaning, painting, air conditioning and gardening.</p><p>This phase introduces the public experience. The catalogue, professional discovery and booking features will be developed in later phases.</p></div></section>
+<section class="section"><x-section-heading eyebrow="WHAT GUIDES US" title="Thoughtful from the start" /><div class="values-grid"><article class="panel"><h3>Clarity</h3><p>Simple navigation and clear information help people understand their next step.</p></article><article class="panel"><h3>Care</h3><p>Respect for people, their time and the homes they invite us into.</p></article><article class="panel"><h3>Connection</h3><p>A shared space for householders and professionals to find one another.</p></article></div></section><x-cta />
+@endsection
