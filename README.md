@@ -4,11 +4,11 @@ University Software Engineering mini-project using Laravel 13, PHP 8.3+, MySQL, 
 
 ## Current increment
 
-Source prepared: customer/provider registration, login/logout, hashed passwords, role middleware, protected role dashboard shells, reusable layout/navigation/footer/input, initial design tokens, and authentication feature tests.
+Implemented: public home/services/about/contact pages, customer/provider registration, login/logout, hashed passwords, role middleware, protected role dashboard shells, reusable Blade components, and authentication/public-page feature tests. Public listings and feedback are disclosed demonstrations.
 
-Not implemented: provider profiles, discovery, bookings, messages, reviews, complaints, administrative management, full homepage, password reset, email verification, and deployment automation. Dashboard shells intentionally show no invented statistics.
+Not implemented: provider profiles, discovery, bookings, messages, reviews, complaints, administrative management, password reset, email verification, and deployment automation. Dashboard shells intentionally show no invented statistics.
 
-**Verification:** PHP syntax and Composer manifest validation can be checked without dependencies. Laravel boot, migrations, browser rendering, and feature tests have NOT been verified: Packagist DNS resolution fails in the development environment. This repository has no installed `vendor` directory or generated lockfile yet.
+**Verification (2026-10-02):** PHP 8.5; Composer manifest valid; `composer test` passes 12 tests with 106 assertions; Blade templates compile. Missing Mockery and Collision development dependencies have been added and locked. MySQL connection currently returns connection refused on `127.0.0.1:3306`; XAMPP/database migration and manual browser checks remain pending.
 
 ## Local setup
 
@@ -16,6 +16,7 @@ Run these commands from the project directory on a machine with internet access,
 
 ```bash
 composer install
+# Only for a fresh checkout without an existing .env:
 cp .env.example .env
 php artisan key:generate
 ```
@@ -35,7 +36,11 @@ php artisan test
 
 Automated feature tests use isolated in-memory SQLite, not your MySQL database. Run migrations and the manual scenarios against MySQL too. CSRF is disabled by Laravel's test environment; check it separately in the browser.
 
-Commit the generated `composer.lock` after the first successful installation so teammates install the same versions. The framework dependency is constrained to Laravel 13; inspect the resolved versions before release.
+`composer.lock` is included; use `composer install` to reproduce the dependency versions. Development dependencies are required to run tests.
+
+## XAMPP integration
+
+See [step-by-step XAMPP setup and troubleshooting](docs/08-xampp-setup.md). The installed XAMPP PHP is 8.2.12, below this project’s PHP 8.3 minimum. Use your separate PHP 8.3+ CLI to serve Laravel and XAMPP for MariaDB/phpMyAdmin.
 
 There is no public administrator registration and no seeded administrator password. A controlled admin provisioning command will be added with the admin module. Tests create admin accounts only in their isolated database.
 

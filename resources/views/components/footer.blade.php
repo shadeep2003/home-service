@@ -4,3 +4,5 @@
 <div><h2>Your next step</h2><a href="{{ route('login') }}">Login</a><a href="{{ route('register') }}">Create an account</a><a href="{{ route('register', ['role' => 'provider']) }}">Become a Provider</a></div>
 <div><h2>A platform taking shape</h2><p>This public preview introduces our vision. Service discovery and booking will arrive in a later phase.</p></div>
 </div><div class="footer-bottom"><span>© {{ date('Y') }} HomeServices. All rights reserved.</span><span>Thoughtful care. From doorstep to done.</span></div></div></footer>
+
+
