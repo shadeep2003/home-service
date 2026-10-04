@@ -30,5 +30,5 @@
         </div></div>
     </div>
 </section>
-<x-profile-photo-upload :user="$provider" />
+
 @endsection

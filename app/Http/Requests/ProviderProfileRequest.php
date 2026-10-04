@@ -18,5 +18,5 @@ class ProviderProfileRequest extends FormRequest
             'category_ids.*' => ['required', 'integer', 'distinct', Rule::exists('service_categories', 'id')->where('is_active', true)],
         ];
     }
-    public function rules(): array { return self::profileRules() + ['is_available' => ['required', 'boolean'], 'is_working' => ['sometimes', 'boolean']]; }
+    public function rules(): array { return \App\Services\AccountProfile::rules($this->user(), false) + self::profileRules() + ['is_available' => ['required', 'boolean'], 'is_working' => ['sometimes', 'boolean']]; }
 }

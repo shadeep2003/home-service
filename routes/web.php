@@ -44,3 +44,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', [\App\Http\Controllers\AdminDashboardController::class, 'index'])->name('admin.dashboard');
     Route::patch('/admin/accounts/{user}', [\App\Http\Controllers\AdminDashboardController::class, 'update'])->name('admin.accounts.update');
 });
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile/edit', [\App\Http\Controllers\AccountProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [\App\Http\Controllers\AccountProfileController::class, 'update'])->name('profile.update');
+});
