@@ -1,13 +1,13 @@
 # Database design
 
-Only the `users` migration is prepared. Every other table below is a planned schema; do not describe it as deployed.
+Implemented migration source: `users`, `service_categories`, `provider_profiles`, and `provider_services`. Run `php artisan migrate` to apply the new foundation to your existing database. Bookings and every subsequent table remain planned.
 
-| Table | Proposed important fields and constraints |
+| Table | Important fields and constraints (booking-related tables remain planned) |
 |---|---|
 | users | id, name, unique email, hashed password, role, remember_token, timestamps |
-| service_categories | id, unique name/slug, description, is_active, timestamps |
-| provider_profiles | id, unique user_id FK, biography, experience_years, service_area, working_hours, is_available, timestamps |
-| provider_services | id, provider_id FK to users, service_category_id FK, unique pair, timestamps |
+| service_categories | id, unique name/slug, description nullable, icon nullable, is_active, timestamps |
+| provider_profiles | id, unique user_id FK (cascade user deletion), phone, biography nullable, experience_years nullable (0–80 validation), service_area, working_hours nullable, is_available, timestamps |
+| provider_services | id, provider_id FK to users, service_category_id FK (restrict category deletion), unique pair, timestamps |
 | bookings | id, customer_id/provider_id/category_id FKs, problem_description, address, scheduled_at, status, timestamps |
 | booking_status_changes | id, booking_id FK, actor_id FK, from_status, to_status, reason nullable, timestamps |
 | messages | id, booking_id/sender_id FKs, body, timestamps |
@@ -41,3 +41,13 @@ Foreign keys ensure records exist, but cannot prove a user has the appropriate r
 Plan indexes on `(provider_id,status,scheduled_at)`, `(customer_id,status)`, and message `(booking_id,created_at)`. Confirm actual query patterns before migration implementation. Use restricted deletion for historical bookings and deactivate referenced categories/accounts. Do not cascade away complaint or booking history.
 
 Proposed lifecycle: Pending → Accepted → In Progress → Completed; Pending → Rejected; customer cancellation of Pending/Accepted before appointment. Post-acceptance provider cancellation and admin intervention rules remain unresolved. Do not implement undocumented shortcuts.
+
+## Provider foundation behavior
+
+Providers offer multiple categories, preserving this design's many-to-many relationship. `provider_services.provider_id` references `users.id`, not `provider_profiles.id`. `User::providerProfile()` is hasOne; `User::serviceCategories()` and `ServiceCategory::providers()` are belongsToMany with pivot timestamps. No separate Provider model is needed.
+
+Phone belongs to the provider profile because users has no phone column. Service area is the public location; no private street address is requested. Phone is visible on the owner's dashboard, not the public listing. Biography, experience and working hours are optional. Availability defaults to true and can be edited; unavailable providers remain listed with a truthful status.
+
+User/profile/service attachment happens inside one transaction. Existing provider accounts are preserved and can complete their profiles through Edit Profile; no fabricated profiles or services are backfilled. Unique user_id and unique pivot pairs prevent duplicates. User deletion cascades profiles and service links; category deletion is restricted when linked. Admin management supports deactivation rather than deletion, preserving links. Inactive categories disappear from browsing and selections and their direct public URL returns 404. Profile saving replaces selections with active categories, with that behavior explained in the form.
+
+`ServiceCategorySeeder` inserts six initial categories and can run repeatedly without overwriting existing descriptions or activation settings. Slugs are unique stable URLs and can be explicitly edited by Admin; old URLs are not redirected after a slug change.

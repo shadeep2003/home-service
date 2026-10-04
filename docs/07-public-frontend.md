@@ -1,5 +1,7 @@
 # Public frontend foundation
 
+> Historical increment record: the database-driven provider foundation now extends this implementation. See [current implementation](09-provider-foundation.md). Categories, homepage, Services and registration GET requests now require migrated database tables; provider registration creates related records transactionally. Static categories/demo providers/testimonials are removed.
+
 This phase serves Blade pages without querying models or creating records. No migrations were run. Service categories, professional profiles and testimonials are explicitly labelled static demonstrations. The contact page provides guidance and FAQs without a message submission form or invented contact details.
 
 ## Run locally

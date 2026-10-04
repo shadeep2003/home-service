@@ -10,9 +10,11 @@
 <option value="customer" @selected(old('role') === 'customer')>Find help for my home</option>
 <option value="provider" @selected(old('role', request('role')) === 'provider')>Offer professional services</option></select>
 @error('role')<p class="field-error" id="role-error">{{ $message }}</p>@enderror</div>
+<div id="provider-fields"><x-provider-fields :categories="$categories" /></div>
 <p class="muted">Use at least 8 characters, including letters and numbers.</p>
 <x-input name="password" label="Password" type="password" autocomplete="new-password" required minlength="8" />
 <x-input name="password_confirmation" label="Confirm password" type="password" autocomplete="new-password" required />
 <button class="button full" type="submit">Create account</button>
 </form><p>Already registered? <a href="{{ route('login') }}">Log in</a></p></section>
+<script src="{{ asset('js/provider-registration.js') }}" defer></script>
 @endsection

@@ -12,11 +12,15 @@ class RegisterRequest extends FormRequest
     }
     public function rules(): array
     {
-        return [
+        $rules = [
             'name' => ['required', 'string', 'max:100'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'confirmed', Password::min(8)->letters()->numbers()],
             'role' => ['required', Rule::in(['customer', 'provider'])],
         ];
+        foreach (ProviderProfileRequest::profileRules() as $field => $fieldRules) {
+            $rules[$field] = $this->input('role') === 'provider' ? $fieldRules : ['exclude'];
+        }
+        return $rules;
     }
 }

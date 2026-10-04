@@ -7,12 +7,9 @@ use Tests\TestCase;
 
 class PublicPagesTest extends TestCase
 {
-    public function test_public_pages_and_auth_forms_render_without_database_queries(): void
+    use \Illuminate\Foundation\Testing\RefreshDatabase;
+    public function test_public_pages_and_auth_forms_render_with_database_categories(): void
     {
-        // A connection attempt fails immediately: these GET requests must never need SQL.
-        DB::purge();
-        config(['database.default' => 'unavailable']);
-
         foreach (['/' => 'Expert Home Services,', '/services' => 'What does your home', '/about' => 'Better connections.', '/contact' => 'A little guidance.', '/login' => 'Your home. Your people.', '/register' => 'A little help starts here.'] as $url => $heading) {
             $response = $this->get($url);
             $response->assertOk()->assertSee($heading)->assertSee('Main navigation');
@@ -22,12 +19,13 @@ class PublicPagesTest extends TestCase
         }
     }
 
-    public function test_homepage_discloses_demo_content_and_links_to_real_public_destinations(): void
+    public function test_homepage_uses_real_categories_and_links_to_public_destinations(): void
     {
+        $this->seed(\Database\Seeders\ServiceCategorySeeder::class);
         $this->get('/')
             ->assertOk()
-            ->assertSee('These are not real providers or bookable listings.')
-            ->assertSee('not actual customer feedback.')
+            ->assertDontSee('DEMO PROFILE')
+            ->assertDontSee('Placeholder testimonial')
             ->assertSee('id="how-it-works"', false)
             ->assertSee('href="'.route('register', ['role' => 'provider']).'"', false);
 

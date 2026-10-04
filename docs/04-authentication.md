@@ -1,5 +1,7 @@
 # Authentication increment: tutor guide
 
+> Historical increment record: the database-driven provider foundation now extends this implementation. See [current implementation](09-provider-foundation.md). Categories, homepage, Services and registration GET requests now require migrated database tables; provider registration creates related records transactionally. Static categories/demo providers/testimonials are removed.
+
 ## Feature
 
 Register as customer/provider, login/logout, and enforce role workspace access. We need this foundation so later booking actions can identify the actor.

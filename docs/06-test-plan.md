@@ -27,3 +27,11 @@ ENV-01: Composer create-project failed with curl error 6 resolving repo.packagis
 ENV-02: Local MySQL at `127.0.0.1:3306` returns connection refused. XAMPP is installed at `/opt/lampp` with PHP 8.2.12. Start its database and use the separate PHP 8.3+ runtime as described in `08-xampp-setup.md`. MySQL migrations have not been run in this review.
 
 Defect records should include ID, requirement/test link, reproducible steps, expected/actual result, severity, fix, and retest evidence. Never record a planned test as passed.
+
+## Provider foundation verification (2026-10-02)
+
+`php artisan test`: 24 tests, 183 assertions passed against isolated in-memory SQLite. Authentication tests remain; provider success input now supplies required professional fields/category. Public-page tests now use migrations and seeded real categories instead of assuming all GETs are database independent.
+
+`ServiceProviderFoundationTest` covers required provider data, invalid/inactive/duplicate category IDs, multi-category registration, customer payload isolation, active category filtering, matching-provider discovery as a customer, empty states, profile creation/update and category replacement, invalid edit preservation, role authorization, Admin create/edit/deactivation and unique slug validation, and repeatable seeding that preserves Admin edits.
+
+MySQL application of the new migration, CSRF browser submission, responsive layouts and keyboard behavior still need manual verification. Earlier connection-refused notes describe historical checks, not the user's currently working connection.

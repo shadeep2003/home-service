@@ -4,11 +4,13 @@ University Software Engineering mini-project using Laravel 13, PHP 8.3+, MySQL, 
 
 ## Current increment
 
-Implemented: public home/services/about/contact pages, customer/provider registration, login/logout, hashed passwords, role middleware, protected role dashboard shells, reusable Blade components, and authentication/public-page feature tests. Public listings and feedback are disclosed demonstrations.
+Implemented: existing public pages and secure role-based authentication, database-driven categories, provider registration with multiple categories, provider profile/dashboard editing, category provider directory, and Admin category creation/editing/activation. Existing Blade design and dependencies are preserved. No invented providers, ratings or job counts are displayed.
 
-Not implemented: provider profiles, discovery, bookings, messages, reviews, complaints, administrative management, password reset, email verification, and deployment automation. Dashboard shells intentionally show no invented statistics.
+Not implemented: bookings, messages, reviews, complaints, password reset, email verification, and admin provisioning. Existing admin accounts can access category management; public registration cannot create Admin accounts.
 
-**Verification (2026-10-02):** PHP 8.5; Composer manifest valid; `composer test` passes 12 tests with 106 assertions; Blade templates compile. Missing Mockery and Collision development dependencies have been added and locked. MySQL connection currently returns connection refused on `127.0.0.1:3306`; XAMPP/database migration and manual browser checks remain pending.
+**Verification (2026-10-02):** SQLite feature suite passes 24 tests with 183 assertions. Production MySQL migrations and manual browser checks are to be run locally. Existing database records have not been changed by this implementation.
+
+See [provider foundation implementation and viva report](docs/09-provider-foundation.md).
 
 ## Local setup
 
@@ -25,6 +27,7 @@ Create a MySQL database named `home_services`. Edit `.env` with your database cr
 
 ```bash
 php artisan migrate
+php artisan db:seed --class=ServiceCategorySeeder
 php artisan serve
 ```
 
@@ -42,7 +45,7 @@ Automated feature tests use isolated in-memory SQLite, not your MySQL database. 
 
 See [step-by-step XAMPP setup and troubleshooting](docs/08-xampp-setup.md). The installed XAMPP PHP is 8.2.12, below this project’s PHP 8.3 minimum. Use your separate PHP 8.3+ CLI to serve Laravel and XAMPP for MariaDB/phpMyAdmin.
 
-There is no public administrator registration and no seeded administrator password. A controlled admin provisioning command will be added with the admin module. Tests create admin accounts only in their isolated database.
+There is no public administrator registration and no seeded administrator password. Use an existing trusted Admin account for category management; account provisioning remains outside this increment. Tests create admin accounts only in their isolated database.
 
 ## Learning and planning
 
@@ -53,4 +56,4 @@ There is no public administrator registration and no seeded administrator passwo
 - [Design system](docs/05-design-system.md)
 - [Test records](docs/06-test-plan.md)
 
-We stop at this increment before implementing further modules, so the group can review the foundation.
+Bookings and other modules remain planned so this foundation can be reviewed independently.

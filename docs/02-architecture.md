@@ -22,4 +22,4 @@ Future booking policies will check ownership in addition to role. A future small
 
 Login uses Laravel's session guard. Registration excludes role from mass-assignment and assigns only a validated customer/provider enum. Sessions rotate after authentication and invalidate on logout. Routes in `web.php` receive Laravel's web middleware, including CSRF protection. Do not remove it.
 
-No external service is required. Dependencies are currently unavailable; this architecture has not been exercised at runtime.
+No external service is required. Dependencies are installed and HTTP feature tests exercise this architecture using isolated SQLite. The provider foundation adds transactional registration/profile writes and Eloquent category discovery. See `09-provider-foundation.md`.

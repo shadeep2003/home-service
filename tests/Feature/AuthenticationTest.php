@@ -33,7 +33,8 @@ class AuthenticationTest extends TestCase
     }
     public function test_provider_registration_uses_provider_role(): void
     {
-        $this->post('/register', ['name' => 'Sam', 'email' => 'sam@example.test', 'role' => 'provider', 'password' => 'Password123', 'password_confirmation' => 'Password123'])->assertRedirect('/dashboard');
+        $category = \App\Models\ServiceCategory::create(['name' => 'Electrical', 'slug' => 'electrical']);
+        $this->post('/register', ['phone' => '0771234567', 'service_area' => 'Colombo', 'category_ids' => [$category->id], 'name' => 'Sam', 'email' => 'sam@example.test', 'role' => 'provider', 'password' => 'Password123', 'password_confirmation' => 'Password123'])->assertRedirect('/dashboard');
         $this->get('/dashboard')->assertRedirect('/provider/dashboard');
         $this->get('/provider/dashboard')->assertOk();
     }

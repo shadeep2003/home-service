@@ -10,19 +10,30 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 class AuthController
 {
+    public function create(): \Illuminate\View\View
+    {
+        return view('auth.register', ['categories' => \App\Models\ServiceCategory::active()->orderBy('name')->get()]);
+    }
     public function register(RegisterRequest $request): RedirectResponse
     {
         $data = $request->validated();
-        $user = new User(collect($data)->only(['name', 'email', 'password'])->all());
-        $user->role = Role::from($data['role']);
-        $user->save();
+        $user = \Illuminate\Support\Facades\DB::transaction(function () use ($data) {
+            $user = new User(collect($data)->only(['name', 'email', 'password'])->all());
+            $user->role = Role::from($data['role']);
+            $user->save();
+            if ($user->role === Role::Provider) {
+                $user->providerProfile()->create(collect($data)->only(['phone', 'service_area', 'biography', 'experience_years', 'working_hours'])->all());
+                $user->serviceCategories()->attach($data['category_ids']);
+            }
+            return $user;
+        });
         Auth::login($user);
         $request->session()->regenerate();
         return redirect()->route('dashboard');
     }
     public function login(LoginRequest $request): RedirectResponse
     {
-        if (! Auth::attempt($request->validated())) {
+        if (! Auth::attempt($request->validated() + ['suspended_at' => null])) {
             throw ValidationException::withMessages(['email' => 'The email or password is incorrect.']);
         }
         $request->session()->regenerate();
