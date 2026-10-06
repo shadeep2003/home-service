@@ -185,4 +185,47 @@ fieldset{border:1px solid var(--border);border-radius:12px;padding:16px;margin:2
 @media(max-width:480px){.navigation,.site-header.is-scrolled .navigation{min-height:72px}.navigation>.brand{font-size:18px;gap:8px}.navigation>.brand .brand-mark{width:40px;height:40px;border-radius:13px;font-size:24px}.navigation>.brand small{font-size:6px;letter-spacing:.17em}.navigation .mobile-menu-toggle{width:46px;height:46px;border-radius:14px}.navigation .mobile-nav-panel{padding:18px;border-radius:21px}}
 @media(max-width:980px){.navigation:not(.navigation-ready) .mobile-menu-toggle{display:none}.navigation:not(.navigation-ready) .mobile-nav-panel{position:static;max-height:none;overflow:visible;margin:0 0 16px;padding:18px;border-radius:18px;box-shadow:0 8px 24px #12304710}}
 body.navigation-drawer-open{overflow:hidden;touch-action:none}
+
+/* Darker HomeServices surfaces and a more legible raised current-page tab. */
+.site-header{background:#123047f5;border-color:#29475a}
+.site-header.is-scrolled{background:#102a3efc;border-color:#345366;box-shadow:0 8px 24px #071a2a30}
+.navigation>.brand{color:#f5f8f6}
+.navigation>.brand small{color:#b7cbd3}
+.navigation>.brand .brand-mark{background:#20475c;box-shadow:inset 0 0 0 1px #ffffff19}
+.navigation .nav-links{background:#1a394f;border-color:#345467;box-shadow:inset 0 1px 0 #ffffff08,0 4px 12px #071a2a18}
+.navigation .nav-links>a{color:#c0cfd6;transition:color .18s,background .18s,transform .18s,box-shadow .18s}
+.navigation .nav-links>a:hover{background:#ffffff0c;color:#f5f8f6;transform:translateY(-1px)}
+.navigation .nav-links>a[aria-current=page]{z-index:1;border:1px solid #acd8cc;background:#e2f1eb;color:#075e62;box-shadow:0 5px 12px #061b2b45,inset 0 1px 0 #ffffff;transform:translateY(-2px)}
+.navigation .nav-links>a[aria-current=page]::after{bottom:5px;background:#087f82}
+.navigation .nav-actions .nav-login{color:#d0dce1}
+.navigation .nav-actions .nav-login:hover,.navigation .nav-actions .nav-login[aria-current=page]{color:#8edbd0}
+.navigation .account-menu>summary{border-color:#365568;background:#1a394f;box-shadow:inset 0 1px 0 #ffffff08}
+.navigation .account-menu>summary:hover,.navigation .account-menu[open]>summary{border-color:#5b8a8c;background:#20475c;box-shadow:0 4px 14px #061b2b32}
+.navigation .account-name{color:#f1f6f4}
+.navigation .account-name small,.navigation .account-menu .account-chevron{color:#a9bdc7}
+.navigation .account-avatar{border:1px solid #66bcb1;background:#d5eee6;color:#075e62}
+.navigation .account-dropdown{border-color:#34576b;background:#17374c;box-shadow:0 18px 44px #061b2b50}
+.navigation .account-dropdown::before{border-color:#34576b;background:#17374c}
+.navigation .account-dropdown>a,.navigation .account-dropdown button{color:#d6e1e5}
+.navigation .account-dropdown>a:hover,.navigation .account-dropdown button:hover{background:#ffffff0c;color:#9de0d6}
+.navigation .account-dropdown form{border-color:#ffffff1a}
+@media(max-width:980px){
+    .navigation .mobile-menu-toggle{border-color:#365568;background:#1a394f;box-shadow:inset 0 1px 0 #ffffff08,0 3px 10px #071a2a24}
+    .navigation .mobile-menu-toggle:hover{background:#20475c;border-color:#52798a}
+    .navigation .mobile-menu-toggle span{background:#eff6f4}
+    .navigation .mobile-nav-panel{border-color:#34576b;background:#123047;box-shadow:0 0 0 100vmax #071a2a9c,0 24px 70px #061b2b70}
+    .mobile-nav-heading{border-color:#ffffff20;color:#eaf2f2}
+    .mobile-menu-close{border-color:#3c6073;background:#1a394f;color:#eff6f4}
+    .mobile-nav-links a{color:#c6d4da}
+    .mobile-nav-links a>span:last-child{color:#81aaa7}
+    .mobile-nav-links a:hover{background:#ffffff0c;color:#f5f8f6}
+    .mobile-nav-links a[aria-current=page]{background:#1d485b;color:#a6e4da;box-shadow:inset 3px 0 0 #62c4b5,0 3px 10px #061b2b22}
+    .mobile-nav-account{border-color:#ffffff20}
+    .mobile-nav-account>a,.mobile-logout{color:#d2dfe3}
+    .mobile-nav-account>a:hover,.mobile-logout:hover{background:#ffffff0c;color:#9de0d6}
+    .mobile-account-identity{color:#f1f6f4}
+    .mobile-account-identity small{color:#a9bdc7}
+    .mobile-login{color:#e3ecee!important}
+    .mobile-logout{background:#1a394f}
+}
 @media(prefers-reduced-motion:reduce){.site-header,.navigation,.navigation .nav-links>a,.navigation .button.nav-cta,.navigation .mobile-menu-toggle span,.account-menu>summary,.account-chevron{transition:none}html{scroll-behavior:auto}}

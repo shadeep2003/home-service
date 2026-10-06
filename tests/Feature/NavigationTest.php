@@ -23,6 +23,21 @@ class NavigationTest extends TestCase
             ->assertSee('aria-controls="mobile-navigation"', false);
     }
 
+    public function test_public_navigation_marks_the_current_route(): void
+    {
+        $this->get('/')->assertOk()
+            ->assertSee('aria-current="page" >Home</a>', false);
+
+        $this->get('/services')->assertOk()
+            ->assertSee('aria-current="page" >Services</a>', false);
+
+        $this->get('/about')->assertOk()
+            ->assertSee('aria-current="page" >About Us</a>', false);
+
+        $this->get('/contact')->assertOk()
+            ->assertSee('aria-current="page" >Contact</a>', false);
+    }
+
     public function test_each_role_sees_only_its_account_navigation_links(): void
     {
         $expectedRoleRoutes = [
@@ -37,6 +52,7 @@ class NavigationTest extends TestCase
             $response = $this->actingAs($user)->get('/')->assertOk();
             $response->assertSee('Taylor Home');
             $response->assertSee('aria-label="Account menu for Taylor Home"', false);
+            $response->assertSee('<details class="account-menu">', false);
             $response->assertSee('href="'.route($routes[0]).'"', false);
             $response->assertSee('href="'.route('profile.edit').'"', false);
             $response->assertSee('action="'.route('logout').'"', false);
