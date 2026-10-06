@@ -6,7 +6,7 @@ University Software Engineering mini-project using Laravel 13, PHP 8.3+, MySQL, 
 
 Implemented: existing public pages and secure role-based authentication, database-driven categories, provider registration with multiple categories, provider profile/dashboard editing, category provider directory, and Admin category creation/editing/activation. Existing Blade design and dependencies are preserved. No invented providers, ratings or job counts are displayed.
 
-Not implemented: bookings, messages, reviews, complaints, password reset, email verification, and admin provisioning. Existing admin accounts can access category management; public registration cannot create Admin accounts.
+Not implemented: bookings, messages, reviews, complaints, password reset and admin provisioning. Existing admin accounts can access category management; public registration cannot create Admin accounts.
 
 **Verification (2026-10-02):** SQLite feature suite passes 24 tests with 183 assertions. Production MySQL migrations and manual browser checks are to be run locally. Existing database records have not been changed by this implementation.
 
@@ -57,3 +57,7 @@ There is no public administrator registration and no seeded administrator passwo
 - [Test records](docs/06-test-plan.md)
 
 Bookings and other modules remain planned so this foundation can be reviewed independently.
+
+## Email OTP login
+
+Every new login now requires an emailed six-digit code after the password is validated. Registration redirects to login. Configure authenticated SMTP before testing login; there is no fake or log delivery fallback. See [email OTP setup, security, and local test instructions](docs/10-email-otp-login.md).

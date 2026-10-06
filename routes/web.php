@@ -12,11 +12,16 @@ Route::middleware('guest')->group(function () {
     Route::get('/register', [AuthController::class, 'create'])->name('register');
     Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:6,1');
     Route::view('/login', 'auth.login')->name('login');
-    Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:6,1');
+    Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login')->block(30, 30);
+    Route::get('/login/verify', [\App\Http\Controllers\LoginVerificationController::class, 'show'])->name('login.verify');
+    Route::post('/login/verify', [\App\Http\Controllers\LoginVerificationController::class, 'verify'])->middleware('throttle:otp-verify')->name('login.verify.submit')->block(30, 30);
+    Route::post('/login/verify/resend', [\App\Http\Controllers\LoginVerificationController::class, 'resend'])->middleware('throttle:otp-resend')->name('login.verify.resend')->block(30, 30);
+    Route::post('/login/verify/cancel', [\App\Http\Controllers\LoginVerificationController::class, 'cancel'])->name('login.verify.cancel')->block(30, 30);
 });
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/dashboard', function (Request $request) {
+        $request->session()->keep('status');
         return redirect()->route($request->user()->role->value.'.dashboard');
     })->name('dashboard');
     foreach (['customer'] as $role) {

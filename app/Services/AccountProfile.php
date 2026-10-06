@@ -22,6 +22,7 @@ class AccountProfile
         try {
             DB::transaction(function () use ($user, $data, $path, $professional) {
                 $user->fill(collect($data)->only(['name', 'email'])->all());
+                if ($user->isDirty('email')) { $user->forceFill(['email_verified_at' => null]); }
                 if ($path) { $user->forceFill(['profile_photo_path' => $path]); }
                 $user->save();
                 if ($professional) { $professional(); }

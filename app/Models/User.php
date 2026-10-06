@@ -29,6 +29,6 @@ class User extends Authenticatable
     protected $hidden = ['password', 'remember_token'];
     protected function casts(): array
     {
-        return ['suspended_at' => 'datetime', 'password' => 'hashed', 'role' => Role::class];
+        return ['email_verified_at' => 'datetime', 'suspended_at' => 'datetime', 'password' => 'hashed', 'role' => Role::class];
     }
 }

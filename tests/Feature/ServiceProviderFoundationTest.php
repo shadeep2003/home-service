@@ -33,12 +33,13 @@ class ServiceProviderFoundationTest extends TestCase
     public function test_provider_registers_multiple_categories_and_sees_dashboard(): void
     {
         $first = $this->category(); $second = $this->category('plumbing');
-        $this->post('/register', $this->registration(['category_ids' => [$first->id, $second->id]]))->assertRedirect('/dashboard');
+        $this->post('/register', $this->registration(['category_ids' => [$first->id, $second->id]]))->assertRedirect('/login');
         $user = User::firstOrFail();
-        $this->assertAuthenticatedAs($user);
+        $this->assertGuest();
         $this->assertSame(2, $user->serviceCategories()->count());
         $this->assertDatabaseHas('provider_profiles', ['user_id' => $user->id, 'service_area' => 'Colombo']);
-        $this->get('/provider/dashboard')->assertOk()->assertSee('Electrical')->assertSee('Plumbing')->assertSee('Colombo');
+        $this->get('/provider/dashboard')->assertRedirect('/login');
+        $this->actingAs($user)->get('/provider/dashboard')->assertOk()->assertSee('Electrical')->assertSee('Plumbing')->assertSee('Colombo');
     }
     public function test_registration_rolls_back_when_profile_creation_fails(): void
     {
@@ -60,7 +61,7 @@ class ServiceProviderFoundationTest extends TestCase
     }
     public function test_customer_payload_cannot_create_provider_records(): void
     {
-        $this->post('/register', $this->registration(['role' => 'customer', 'category_ids' => [9999]]))->assertRedirect('/dashboard');
+        $this->post('/register', $this->registration(['role' => 'customer', 'category_ids' => [9999]]))->assertRedirect('/login');
         $this->assertDatabaseCount('users', 1); $this->assertDatabaseCount('provider_profiles', 0); $this->assertDatabaseCount('provider_services', 0);
     }
     public function test_database_categories_are_visible_and_inactive_categories_are_hidden(): void

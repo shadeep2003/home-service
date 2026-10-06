@@ -27,17 +27,25 @@ class AuthController
             }
             return $user;
         });
-        Auth::login($user);
-        $request->session()->regenerate();
-        return redirect()->route('dashboard');
+        return redirect()->route('login')->with('status', 'Account created. Log in to verify your email and continue.');
     }
-    public function login(LoginRequest $request): RedirectResponse
+    public function login(LoginRequest $request, \App\Services\LoginVerification $verification): RedirectResponse
     {
-        if (! Auth::attempt($request->validated() + ['suspended_at' => null])) {
+        $credentials = $request->validated() + ['suspended_at' => null];
+        // Validate without creating an authenticated session or remember cookie.
+        $provider = Auth::guard()->getProvider();
+        $user = $provider->retrieveByCredentials($credentials);
+        if (! $user || ! $provider->validateCredentials($user, $credentials)) {
+            // Use the same response for missing, suspended, and incorrect credentials.
+            if (! $user) { \Illuminate\Support\Facades\Hash::check($credentials['password'], '$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.'); }
             throw ValidationException::withMessages(['email' => 'The email or password is incorrect.']);
         }
-        $request->session()->regenerate();
-        return redirect()->intended(route('dashboard'));
+        $provider->rehashPasswordIfRequired($user, $credentials);
+        $delivered = $verification->start($request, $user);
+        if ($delivered) { $request->session()->forget('errors'); }
+        return $delivered
+            ? redirect()->route('login.verify')->with('status', 'A verification code has been sent to your account email.')
+            : redirect()->route('login.verify')->withErrors(['code' => 'We could not send the verification email. Please retry after the countdown or return to login.']);
     }
     public function logout(Request $request): RedirectResponse
     {

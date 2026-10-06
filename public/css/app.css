@@ -101,3 +101,8 @@ fieldset{border:1px solid var(--border);border-radius:12px;padding:16px;margin:2
 @media(max-width:900px){.about-hero{gap:28px}.about-service-types{grid-template-columns:repeat(3,1fr)}.about-steps{grid-template-columns:1fr 1fr}.about-purpose{gap:30px}.about-audiences article{padding:26px}.about-audiences h2{font-size:26px}}
 @media(max-width:700px){.about-hero{grid-template-columns:1fr;padding:42px 0;gap:24px}.about-hero-art{min-height:270px}.about-house{font-size:120px}.about-purpose,.about-audiences,.about-transparency,.about-roadmap{grid-template-columns:1fr;gap:24px}.about-purpose{padding:26px 0}.about-purpose h2{font-size:30px}.about-transparency{padding:28px}.about-transparency h2{font-size:30px}.about-service-types{gap:10px}.about-service-types>span{font-size:12px;padding:18px 8px}}
 @media(max-width:380px){.about-service-types{grid-template-columns:1fr 1fr}.about-steps{grid-template-columns:1fr}.about-hero .hero-actions .button{width:100%}}
+
+.otp-input { font-size: 1.75rem; letter-spacing: .35em; text-align: center; }
+.otp-status { color: #26766c; }
+#login-verification form + form { margin-top: 1rem; }
+#login-verification button:disabled { opacity: .6; cursor: wait; }

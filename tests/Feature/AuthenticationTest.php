@@ -7,11 +7,11 @@ use Tests\TestCase;
 class AuthenticationTest extends TestCase
 {
     use RefreshDatabase;
-    public function test_customer_registration_hashes_password_and_logs_in(): void
+    public function test_customer_registration_hashes_password_and_requires_login(): void
     {
-        $this->post('/register', ['name' => 'Alex', 'email' => 'alex@example.test', 'role' => 'customer', 'password' => 'Password123', 'password_confirmation' => 'Password123'])->assertRedirect('/dashboard');
+        $this->post('/register', ['name' => 'Alex', 'email' => 'alex@example.test', 'role' => 'customer', 'password' => 'Password123', 'password_confirmation' => 'Password123'])->assertRedirect('/login');
         $user = User::firstOrFail();
-        $this->assertAuthenticatedAs($user);
+        $this->assertGuest();
         $this->assertTrue(Hash::check('Password123', $user->password));
         $this->assertSame('customer', $user->role->value);
     }
@@ -34,22 +34,14 @@ class AuthenticationTest extends TestCase
     public function test_provider_registration_uses_provider_role(): void
     {
         $category = \App\Models\ServiceCategory::create(['name' => 'Electrical', 'slug' => 'electrical']);
-        $this->post('/register', ['phone' => '0771234567', 'service_area' => 'Colombo', 'category_ids' => [$category->id], 'name' => 'Sam', 'email' => 'sam@example.test', 'role' => 'provider', 'password' => 'Password123', 'password_confirmation' => 'Password123'])->assertRedirect('/dashboard');
-        $this->get('/dashboard')->assertRedirect('/provider/dashboard');
-        $this->get('/provider/dashboard')->assertOk();
+        $this->post('/register', ['phone' => '0771234567', 'service_area' => 'Colombo', 'category_ids' => [$category->id], 'name' => 'Sam', 'email' => 'sam@example.test', 'role' => 'provider', 'password' => 'Password123', 'password_confirmation' => 'Password123'])->assertRedirect('/login');
+        $this->assertGuest();
+        $this->get('/provider/dashboard')->assertRedirect('/login');
     }
     public function test_wrong_password_does_not_authenticate(): void
     {
         User::factory()->create(['email' => 'alex@example.test']);
         $this->post('/login', ['email' => 'alex@example.test', 'password' => 'WrongPassword'])->assertSessionHasErrors('email');
-        $this->assertGuest();
-    }
-    public function test_login_and_logout(): void
-    {
-        $user = User::factory()->create();
-        $this->post('/login', ['email' => $user->email, 'password' => 'Password123'])->assertRedirect('/dashboard');
-        $this->assertAuthenticatedAs($user);
-        $this->post('/logout')->assertRedirect('/');
         $this->assertGuest();
     }
     public function test_role_dashboards_reject_other_roles_and_guests(): void
