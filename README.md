@@ -60,4 +60,4 @@ Bookings and other modules remain planned so this foundation can be reviewed ind
 
 ## Email OTP login
 
-Every new login now requires an emailed six-digit code after the password is validated. Registration redirects to login. Configure authenticated SMTP before testing login; there is no fake or log delivery fallback. See [email OTP setup, security, and local test instructions](docs/10-email-otp-login.md).
+Email verification is required once per email address. Registration immediately sends a six-digit verification code; successful verification activates the account. Verified accounts use password-only future logins. Changing an email requires verification again. Configure authenticated SMTP before testing registration or unverified login; there is no fake or log delivery fallback. See [email OTP setup, security, and local test instructions](docs/10-email-otp-login.md).

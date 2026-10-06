@@ -8,6 +8,11 @@ use Tests\TestCase;
 class ServiceProviderFoundationTest extends TestCase
 {
     use RefreshDatabase;
+    protected function setUp(): void
+    {
+        parent::setUp();
+        \Illuminate\Support\Facades\Mail::fake();
+    }
     private function category(string $slug = 'electrical', bool $active = true): ServiceCategory
     {
         return ServiceCategory::create(['name' => ucfirst($slug), 'slug' => $slug, 'is_active' => $active]);
@@ -33,12 +38,13 @@ class ServiceProviderFoundationTest extends TestCase
     public function test_provider_registers_multiple_categories_and_sees_dashboard(): void
     {
         $first = $this->category(); $second = $this->category('plumbing');
-        $this->post('/register', $this->registration(['category_ids' => [$first->id, $second->id]]))->assertRedirect('/login');
+        $this->post('/register', $this->registration(['category_ids' => [$first->id, $second->id]]))->assertRedirect('/login/verify');
         $user = User::firstOrFail();
         $this->assertGuest();
         $this->assertSame(2, $user->serviceCategories()->count());
         $this->assertDatabaseHas('provider_profiles', ['user_id' => $user->id, 'service_area' => 'Colombo']);
         $this->get('/provider/dashboard')->assertRedirect('/login');
+        $user->forceFill(['email_verified_at' => now()])->save();
         $this->actingAs($user)->get('/provider/dashboard')->assertOk()->assertSee('Electrical')->assertSee('Plumbing')->assertSee('Colombo');
     }
     public function test_registration_rolls_back_when_profile_creation_fails(): void
@@ -61,7 +67,7 @@ class ServiceProviderFoundationTest extends TestCase
     }
     public function test_customer_payload_cannot_create_provider_records(): void
     {
-        $this->post('/register', $this->registration(['role' => 'customer', 'category_ids' => [9999]]))->assertRedirect('/login');
+        $this->post('/register', $this->registration(['role' => 'customer', 'category_ids' => [9999]]))->assertRedirect('/login/verify');
         $this->assertDatabaseCount('users', 1); $this->assertDatabaseCount('provider_profiles', 0); $this->assertDatabaseCount('provider_services', 0);
     }
     public function test_database_categories_are_visible_and_inactive_categories_are_hidden(): void

@@ -28,7 +28,7 @@ class LoginVerificationController
         Auth::login($result['user']);
         $request->session()->regenerate();
         $request->session()->regenerateToken();
-        return redirect()->intended(route('dashboard'))->with('status', 'Login verified successfully.');
+        return redirect()->intended(route('dashboard'))->with('status', 'Email verified successfully.');
     }
     public function resend(Request $request, LoginVerification $verification)
     {

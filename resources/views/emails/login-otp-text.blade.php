@@ -1,7 +1,24 @@
-HOME SERVICES — Verify your login
+HomeServices
+A LITTLE HELP. A BETTER HOME.
 
-Your verification code: {{ $code }}
+Verify your email
 
-Enter it on the login verification screen. It expires in 5 minutes and can be used only once.
-If you did not request this login, do not share or enter this code. Ignore this email and consider changing your account password.
-Home Services will never ask you to share this code with another person.
+Hello,
+
+Please verify your email address to activate your HomeServices account.
+Use the verification code below to confirm this email address belongs to you.
+
+YOUR VERIFICATION CODE
+{{ $code }}
+
+Expires in 5 minutes. Single use only.
+
+Keep your account secure
+Never share this verification code with anyone. HomeServices will never ask you to send this code by email, message, or phone.
+
+If you didn't request email verification, you can safely ignore this email.
+
+HomeServices
+A LITTLE HELP. A BETTER HOME.
+This is an automated security message. Please do not reply to this email.
+© {{ now()->year }} HomeServices

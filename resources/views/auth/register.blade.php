@@ -1,7 +1,8 @@
 @extends('layouts.app')
 @section('title', 'Create an account')
 @section('content')
-<section class="auth-card"><p class="eyebrow">MAKE YOURSELF AT HOME</p><h1>A little help starts here.</h1>
+<x-auth-shell mode="register">
+<section class="auth-form"><p class="eyebrow">MAKE YOURSELF AT HOME</p><h1>Let’s make life a little easier.</h1>
 <p class="muted">Create your account as a customer or service provider.</p>
 <form method="POST" action="{{ route('register') }}">@csrf
 <x-input name="name" label="Full name" autocomplete="name" required maxlength="100" />
@@ -16,5 +17,6 @@
 <x-input name="password_confirmation" label="Confirm password" type="password" autocomplete="new-password" required />
 <button class="button full" type="submit">Create account</button>
 </form><p>Already registered? <a href="{{ route('login') }}">Log in</a></p></section>
+</x-auth-shell>
 <script src="{{ asset('js/provider-registration.js') }}" defer></script>
 @endsection

@@ -1,93 +1,106 @@
-# Email OTP login
+# One-time email verification
 
-Credentials are validated without signing in. A six-digit email code is then required on every login, including accounts whose email was previously verified. Registration creates the account and redirects to login; it no longer grants a session automatically. Successful verification retains the intended destination, or redirects through `/dashboard` to the user's role dashboard.
+HomeServices uses `users.email_verified_at` as the single verification status. A null value requires verification; an existing timestamp permits password-only login. This is email ownership verification, not two-factor authentication on every login.
 
-## Local configuration
+## Registration and login
 
-The project uses Laravel's bundled Symfony SMTP mailer; no new dependency, Node build, queue worker, public callback, or deployed domain is required. A localhost app can connect to your provider's remote SMTP server.
+Registration creates an unverified account and immediately starts the existing session-bound email challenge. A branded email contains a secure six-digit code. The user remains a guest until the code is checked successfully. Verification consumes the challenge once, sets `email_verified_at`, rotates the session ID/CSRF token, and redirects through `/dashboard` to the intended page or the user's customer/provider/admin dashboard.
 
-Add the following variables to your existing **untracked** `.env` (placeholders are in `.env.example`):
+Subsequent valid password logins for verified accounts authenticate directly, without generating a challenge or sending mail. This also works if SMTP is temporarily unavailable. Unverified existing accounts must supply valid credentials before receiving a code. A suitable current pending code is reused to prevent duplicate submissions from discarding an emailed code.
 
-| Variable | Setting |
+Changing an email through the customer/admin profile or provider profile clears `email_verified_at`. The next request using that unverified authenticated session signs the user out and requires a new password login followed by verification of the new email. Protected JSON requests receive 403. Saving a profile without changing the email preserves verification.
+
+Public registration cannot set its own verified status or create an admin account. Sending mail never marks an account verified.
+
+## Existing accounts and database
+
+No schema migration or data backfill is required: `email_verified_at` and `login_challenges` already exist. Previously verified accounts keep their timestamps. Existing null values remain unverified and complete verification at their next login. No production or development accounts are silently verified. Test factories default to verified fixtures for unrelated authenticated feature tests; `User::factory()->unverified()` explicitly creates an unverified test account. Real registration does not use this factory default. Demo seeders do not use the factory or mark accounts verified.
+
+If setting up a fresh checkout, run all existing migrations. Do not use `migrate:fresh` against a database with accounts to preserve.
+
+## SMTP setup
+
+SMTP and `.env` are unchanged by this refactor. Laravel's bundled Symfony mailer sends synchronously, without a queue, public callback, or deployed domain. Localhost can connect to the provider's remote SMTP server.
+
+Required mail setting names in the existing untracked `.env`:
+
+| Variable | Purpose |
 | --- | --- |
-| `MAIL_MAILER` | `smtp` (required; log/array/failover delivery is rejected) |
-| `MAIL_SCHEME` | `smtp` for STARTTLS, usually port 587; `smtps` for implicit TLS, usually port 465 |
-| `MAIL_HOST` | Your provider's SMTP hostname |
-| `MAIL_PORT` | Provider's port, normally 587 or 465 |
-| `MAIL_USERNAME` | SMTP username supplied by the provider |
-| `MAIL_PASSWORD` | SMTP password or app password; quote values containing spaces or `#` |
-| `MAIL_FROM_ADDRESS` | An email/sender authorized by your provider |
-| `MAIL_FROM_NAME` | Display name, e.g. `"Home Services"` |
-| `MAIL_EHLO_DOMAIN` | `localhost` locally, or a hostname required by the provider |
+| `MAIL_MAILER` | `smtp`; log/array/failover delivery is rejected |
+| `MAIL_HOST` | Provider SMTP hostname |
+| `MAIL_PORT` | Typically 587 for STARTTLS or 465 for implicit TLS |
+| `MAIL_SCHEME` | `smtp` or `smtps`; existing legacy `tls`/`ssl` aliases remain supported |
+| `MAIL_USERNAME` | Provider SMTP username |
+| `MAIL_PASSWORD` | Provider SMTP/app password; never paste into chat or logs |
+| `MAIL_FROM_ADDRESS` | Provider-authorized sender |
+| `MAIL_FROM_NAME` | Display name |
+| `MAIL_EHLO_DOMAIN` | `localhost` locally, or a provider-required hostname |
 
-TLS is required, including on localhost's outbound SMTP connection. Do not disable certificate validation. Use the provider's instructions for sender verification and app passwords. Ordinary account passwords may not work. The implementation requires authenticated SMTP; unauthenticated local mail catchers are not treated as real delivery.
+Keep the existing application key, database credentials, and session protections. Keep persistent, lock-capable cache outside tests (`CACHE_STORE=file` locally). TLS remains required; certificate validation is not disabled. Configuration examples are in `.env.example`; never commit real credentials.
 
-Keep the existing `APP_KEY`, database settings, session settings, and `CACHE_STORE=file`. File cache persists throttles and supports locks; do not use the ephemeral array store outside tests. Do not regenerate an existing app key. `APP_DEBUG=false` is recommended when handling real credentials; never share debug pages or SMTP diagnostics containing secrets.
+After locally changing configuration, clear configuration and restart the server. No credential changes are needed for one-time verification.
 
-After editing `.env`:
+## Security preserved
 
-```bash
-php artisan config:clear
-php artisan migrate
-php artisan serve
-```
+- Cryptographically secure six-digit generation and salted hash storage; no plaintext code in database, logs, old input, or queued jobs.
+- Five-minute code expiry and fifteen-minute pending attempt expiry.
+- Random session binding plus user/email/password fingerprint. Suspension, email changes, or password changes invalidate a pending challenge.
+- At most five incorrect code guesses per challenge; resend does not reset attempts. Consumed codes cannot be replayed.
+- Sixty-second resend cooldown, per-IP/account/challenge request limits, and per-account send limits across sessions.
+- Row locks and session POST locks serialize mutation. Hash/expiry are saved under the transaction before mail is sent. SMTP failure clears the replacement; success commits an active challenge.
+- A blocked rate-limited resend preserves an already delivered code; a permitted replacement invalidates the old code. Actual failed delivery cannot grant a session.
+- Password checks, password rehashing, HttpOnly/SameSite cookies, session/CSRF rotation, account suspension and role checks remain in place.
+- Server checks enforce verified status even for older authenticated sessions. Public responses do not reveal whether login email addresses exist.
+- Logs contain predefined error categories and missing variable names only, never SMTP exception bodies, code values, account emails, or secrets.
 
-Restart any existing server after changing configuration. Run migrations against your configured MySQL database; migration adds `users.email_verified_at` and `login_challenges`. It preserves account records, passwords, roles, and existing session protections. Existing authenticated sessions retain their current lifetime; all new logins require OTP.
+Challenge route/service/model class names are retained to avoid needless changes: `/login/verify`, `/login/verify/resend`, `/login/verify/cancel`, `LoginVerification`, `LoginChallenge`, and `LoginOtp`. The UI and mail wording now describe email verification.
 
-## Manual end-to-end check
+## Manual test
 
-1. Open `http://localhost:8000/login`. Use an account with an inbox you control (new accounts must log in after registration).
-2. Submit an incorrect password: the response is the same for an unknown email and no email is sent.
-3. Submit correct credentials: the verification screen appears. Check the inbox (and spam). Visiting a protected dashboard or posting to a protected endpoint before verification must redirect to login, or return 401 for JSON requests.
-4. Paste the six-digit code and submit. The app signs you in and redirects to the intended page or appropriate customer/provider/admin dashboard. Logout and login again: a new code is required even if `email_verified_at` is already set.
-5. Try an incorrect code: remaining attempts decrease. Five wrong six-digit codes lock the challenge, including resend. Return to login to restart.
-6. Wait five minutes: the old code expires. Resend becomes available after 60 seconds. The previous code must fail; only the newly emailed code succeeds. Attempts are not reset by resend.
-7. Refresh the verification page: the challenge and deadlines survive without sending again. After 15 minutes, the pending login ends and requires credentials again. Return to login explicitly cancels the challenge.
-8. Missing or rejected SMTP settings show a delivery error and never create an authenticated session. Actual resend delivery failures invalidate the previous code; a blocked rate-limited request retains an existing valid code. Restore settings, restart the server, and retry after cooldown.
-9. Repeated requests show a 429 page with the retry time. Do not clear the cache to work around normal cooldowns.
+1. Start Laravel and register a new customer with an inbox you control. Registration immediately opens `/login/verify` and sends **Verify your HomeServices email address**. The account remains unverified and cannot access a dashboard before code verification.
+2. Enter an incorrect code and confirm it fails without verifying the account. Enter the newest correct code within five minutes and confirm the correct dashboard opens.
+3. Log out. Log in again with the same email/password: the dashboard opens directly, with no new code, email, or verification screen.
+4. Repeat registration/verification with a provider. For admin, use an existing admin account; there is no public admin signup. Existing unverified accounts verify on their first valid login.
+5. For another unverified account, wait five minutes and confirm expiry. Resend after the sixty-second cooldown; old code fails, latest code succeeds. Refreshing the screen does not send another email.
+6. Change the email of a verified account in its profile. On the next protected request it is signed out. Log in using the new email/password and verify the code sent to the new inbox. Future logins again use only credentials.
+7. Confirm an unchanged email/profile update preserves verification.
 
-The app cannot guarantee an inbox delivery just because an SMTP server accepts a message. Confirm actual receipt with the inbox you control. No code is printed to application logs, exposed in HTTP responses, or persisted as plaintext; do not add mail logging or message-body tracing.
+Mail acceptance and inbox delivery are different. Gmail SMTP was verified in earlier diagnostics; this refactor uses automated mail fakes to avoid sending unsolicited messages or exposing live codes. Manually confirm the new wording/subject in your inbox.
 
-## Security and implementation
-
-- `random_int` generates six digits (including leading zeroes), stored only as a salted password hash. The code exists briefly in memory for synchronous email delivery; it is never queued or flashed as old input.
-- A random browser-session binding is hashed in the database. Each UUID challenge references its user and a keyed fingerprint of the account email/password. Account suspension or email/password changes invalidate pending challenges.
-- Code lifetime is five minutes; pending login lifetime is fifteen minutes. Successful verification removes the hash and marks the challenge consumed. Database row locks serialize verification/resend; session locks serialize same-browser POST requests.
-- At most five incorrect six-digit guesses per challenge. Resend preserves the attempt count and cannot revive a locked challenge. A permitted resend generates a different code and invalidates the previous hash, including on actual delivery failure. A rate-limited request that does not attempt replacement preserves the current code.
-- Login: six requests/minute per IP and normalized email. Verification: ten requests/minute per IP and pending challenge. Resend: three requests/minute per IP and challenge, plus a strict 60-second challenge cooldown. Delivery also permits one send/minute and ten/hour per user across browser sessions/IPs.
-- Password validation uses Laravel's authentication provider and retains password rehashing. Authentication occurs only after consuming the code. Session ID and CSRF token rotate on successful login; existing HttpOnly, SameSite, role checks and account suspension middleware remain in place.
-- `email_verified_at` records first successful verification independently of the per-login challenge. Changing an account email clears this timestamp.
-- SMTP errors are caught without reporting their potentially sensitive exception body. Logs contain only predefined failure reasons and missing environment variable names; never exception objects/messages, recipients, code values, or credential values. No log transport fallback is configured. Test doubles exist only in automated tests.
-- HTTP countdowns use server deadlines; client-side edits cannot change server enforcement. One labelled numeric text input supports complete-code paste, autofill, and normal keyboard navigation. It includes submit/loading, delivery, invalid-code, expiry, lockout and resend feedback.
-
-Run the full suite:
+## Automated checks
 
 ```bash
 php artisan test
 ```
 
-Tests use in-memory SQLite and `Mail::fake()` (or explicit delivery failure mocks); they do **not** verify delivery to an inbox. Coverage includes success, roles, generic credential errors, hashed storage, expiry, reuse, session binding, account changes, resend invalidation, delivery failures, cooldowns, rate limits, pending refresh/cancellation, and protected HTML/JSON endpoints.
+Validation: **72 tests passed with 704 assertions**, plus PHP syntax, Blade compilation, and whitespace checks. Tests use isolated in-memory SQLite and mail fakes. Coverage includes registration sending without verification, successful single-use verification, incorrect/expired codes, resend invalidation, rate limits, binding, storage and delivery failure, protected HTML/JSON routes, legacy unverified sessions, password-only subsequent login, customer/provider/admin redirects, and email-change reset. Existing SMTP scheme tests remain unchanged.
 
-Old challenges can be removed with `php artisan auth:prune-login-challenges`. A daily scheduler entry is included; run Laravel's scheduler in deployed environments, or run that command manually locally. Only records whose pending lifetime ended more than a day ago are removed.
+Expired challenges can be pruned with `php artisan auth:prune-login-challenges`; the existing daily schedule remains available. Only challenges whose pending lifetime ended more than one day ago are removed.
 
-Implementation references: [Laravel SMTP configuration](https://github.com/laravel/laravel/blob/13.x/config/mail.php), [Laravel rate limiting](https://github.com/laravel/docs/blob/13.x/rate-limiting.md).
+## Files changed for the one-time verification refactor
 
-## Validation status
+Application:
+- `app/Http/Controllers/AuthController.php`
+- `app/Http/Controllers/LoginVerificationController.php`
+- `app/Http/Middleware/EnsureEmailVerified.php` (new)
+- `bootstrap/app.php`
 
-Full feature suite: **65 tests passed, 602 assertions**. PHP and JavaScript syntax checks, Blade compilation, and diff whitespace checks passed. Automated tests use test delivery only. Real Gmail SMTP connection, negotiated TLS, authentication, and acceptance of both a simple test email and the existing OTP Mailable have been verified. Actual inbox receipt remains a manual check. The diagnostic OTP challenge was cancelled after submission; start a fresh login for a usable code. The OTP migration was subsequently applied successfully to the local MySQL/MariaDB database outside the sandbox. Required deadline columns use DATETIME for compatibility with strict timestamp defaults; migration retry also handles an email verification column left by a partial DDL failure. Perform the manual inbox flow after configuring SMTP.
+Mail and UI:
+- `app/Mail/LoginOtp.php`
+- `resources/views/auth/verify-login.blade.php`
+- `resources/views/emails/login-otp.blade.php`
+- `resources/views/emails/login-otp-text.blade.php`
 
+Tests and fixtures:
+- `database/factories/UserFactory.php`
+- `tests/Feature/AuthenticationTest.php`
+- `tests/Feature/LoginOtpTest.php`
+- `tests/Feature/AccountProfileTest.php`
+- `tests/Feature/ServiceProviderFoundationTest.php`
+- `tests/Feature/EmailVerificationTest.php` (new)
 
-### Safe delivery diagnosis
+Documentation:
+- `README.md`
+- `docs/10-email-otp-login.md`
 
-The current project's `.env` must contain the mail setting names listed above. Settings in `.env.example`, another checkout, or another environment file do not configure this running app. After editing the correct file locally, clear configuration and restart the server. No credential values should be pasted into chat or diagnostics.
-
-Safe log reasons include `smtp_configuration_missing` (with missing names only), `smtp_mailer_required`, `delivery_rate_limited`, `smtp_authentication_rejected`, `smtp_tls_failed`, `smtp_timeout`, `smtp_dns_failed`, and `smtp_connection_failed`, and `smtp_scheme_unsupported`. Other errors receive a generic fixed reason. The logs deliberately omit SMTP replies and message contents.
-
-SMTP compatibility fix: legacy `MAIL_SCHEME=tls` and `ssl` labels are normalized in `config/mail.php` to Symfony transport schemes `smtp` and `smtps`. When omitted, port 465 selects `smtps`; other ports select `smtp`. TLS enforcement remains enabled. No credential or `.env` changes are needed for this compatibility fix.
-
-
-### OTP state transition fix
-
-Duplicate valid credential submissions in the same pending session retain an already delivered, unexpired challenge instead of cancelling it before hitting the send cooldown. Resend checks account send limits before replacing the current code. Successful login/resend clears stale validation errors. The salted code hash and expiry are saved under the existing transaction/row lock before mail is sent; a write failure therefore cannot send an unusable code. Transport failures still clear the replacement hash and prevent authentication. The transaction commits the replacement only after delivery returns successfully. SMTP configuration is unchanged.
-
-Regression coverage includes active page state after delivery/resend, duplicate-login preservation, rate-limited resend preservation, hash persistence before mail, failed persistence before mail, stale-error clearing, expiry, single-use verification, and role dashboards.
+The working OTP service, challenge model, schema/migrations, SMTP configuration, and `.env` were not modified by this refactor.

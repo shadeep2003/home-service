@@ -15,7 +15,9 @@ class AccountProfileTest extends TestCase
         $this->assertSame('New Name', $user->fresh()->name);
         $this->assertSame('customer', $user->fresh()->role->value);
         $this->assertNotSame('New Name', $other->fresh()->name);
-        $this->put('/profile', ['name' => 'Test', 'email' => $other->email])->assertSessionHasErrors('email');
+        $this->assertNull($user->fresh()->email_verified_at);
+        $this->get('/dashboard')->assertRedirect('/login');
+        $this->assertGuest();
     }
     public function test_provider_saves_personal_and_professional_fields_together(): void
     {
@@ -25,6 +27,8 @@ class AccountProfileTest extends TestCase
         $this->put('/provider/profile', ['name' => 'Updated Provider', 'email' => 'provider@example.com', 'phone' => '0771234567', 'service_area' => 'Galle', 'category_ids' => [$category->id], 'is_available' => 1])->assertRedirect('/provider/dashboard');
         $this->assertSame('Updated Provider', $user->fresh()->name);
         $this->assertDatabaseHas('provider_profiles', ['user_id' => $user->id, 'service_area' => 'Galle']);
-        $this->get('/provider/profile/edit')->assertOk()->assertDontSee('Upload photo')->assertSee('Save profile');
+        $this->assertNull($user->fresh()->email_verified_at);
+        $this->get('/provider/profile/edit')->assertRedirect('/login');
+        $this->assertGuest();
     }
 }

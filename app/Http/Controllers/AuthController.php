@@ -14,7 +14,7 @@ class AuthController
     {
         return view('auth.register', ['categories' => \App\Models\ServiceCategory::active()->orderBy('name')->get()]);
     }
-    public function register(RegisterRequest $request): RedirectResponse
+    public function register(RegisterRequest $request, \App\Services\LoginVerification $verification): RedirectResponse
     {
         $data = $request->validated();
         $user = \Illuminate\Support\Facades\DB::transaction(function () use ($data) {
@@ -27,7 +27,7 @@ class AuthController
             }
             return $user;
         });
-        return redirect()->route('login')->with('status', 'Account created. Log in to verify your email and continue.');
+        return $this->requestVerification($request, $user, $verification);
     }
     public function login(LoginRequest $request, \App\Services\LoginVerification $verification): RedirectResponse
     {
@@ -41,6 +41,18 @@ class AuthController
             throw ValidationException::withMessages(['email' => 'The email or password is incorrect.']);
         }
         $provider->rehashPasswordIfRequired($user, $credentials);
+        if ($user->email_verified_at) {
+            $verification->cancel($request);
+            Auth::login($user);
+            $request->session()->regenerate();
+            $request->session()->regenerateToken();
+            $request->session()->forget('errors');
+            return redirect()->intended(route('dashboard'));
+        }
+        return $this->requestVerification($request, $user, $verification);
+    }
+    private function requestVerification(Request $request, User $user, \App\Services\LoginVerification $verification): RedirectResponse
+    {
         $delivered = $verification->start($request, $user);
         if ($delivered) { $request->session()->forget('errors'); }
         return $delivered

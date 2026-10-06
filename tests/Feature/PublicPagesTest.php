@@ -10,7 +10,7 @@ class PublicPagesTest extends TestCase
     use \Illuminate\Foundation\Testing\RefreshDatabase;
     public function test_public_pages_and_auth_forms_render_with_database_categories(): void
     {
-        foreach (['/' => 'Expert Home Services,', '/services' => 'What does your home', '/about' => 'Better connections.', '/contact' => 'A little guidance.', '/login' => 'Your home. Your people.', '/register' => 'A little help starts here.'] as $url => $heading) {
+        foreach (['/' => 'Expert Home Services,', '/services' => 'What does your home', '/about' => 'Better connections.', '/contact' => 'A little guidance.', '/login' => 'Welcome home.', '/register' => 'Let’s make life a little easier.'] as $url => $heading) {
             $response = $this->get($url);
             $response->assertOk()->assertSee($heading)->assertSee('Main navigation');
             foreach (['/services', '/about', '/contact', '/login', '/register'] as $link) {

@@ -7,13 +7,23 @@ use Tests\TestCase;
 class AuthenticationTest extends TestCase
 {
     use RefreshDatabase;
-    public function test_customer_registration_hashes_password_and_requires_login(): void
+    protected function setUp(): void
     {
-        $this->post('/register', ['name' => 'Alex', 'email' => 'alex@example.test', 'role' => 'customer', 'password' => 'Password123', 'password_confirmation' => 'Password123'])->assertRedirect('/login');
+        parent::setUp();
+        \Illuminate\Support\Facades\Mail::fake();
+        config(['mail.default' => 'smtp', 'mail.mailers.smtp.host' => 'smtp.example.test',
+            'mail.mailers.smtp.username' => 'test', 'mail.mailers.smtp.password' => 'test',
+            'mail.from.address' => 'sender@example.test']);
+    }
+    public function test_customer_registration_hashes_password_and_requests_email_verification(): void
+    {
+        $this->post('/register', ['name' => 'Alex', 'email' => 'alex@example.test', 'role' => 'customer', 'password' => 'Password123', 'password_confirmation' => 'Password123'])->assertRedirect('/login/verify');
         $user = User::firstOrFail();
         $this->assertGuest();
         $this->assertTrue(Hash::check('Password123', $user->password));
         $this->assertSame('customer', $user->role->value);
+        $this->assertNull($user->email_verified_at);
+        \Illuminate\Support\Facades\Mail::assertSent(\App\Mail\LoginOtp::class, fn ($mail) => $mail->hasTo($user->email));
     }
     public function test_public_registration_cannot_create_admin(): void
     {
@@ -34,9 +44,13 @@ class AuthenticationTest extends TestCase
     public function test_provider_registration_uses_provider_role(): void
     {
         $category = \App\Models\ServiceCategory::create(['name' => 'Electrical', 'slug' => 'electrical']);
-        $this->post('/register', ['phone' => '0771234567', 'service_area' => 'Colombo', 'category_ids' => [$category->id], 'name' => 'Sam', 'email' => 'sam@example.test', 'role' => 'provider', 'password' => 'Password123', 'password_confirmation' => 'Password123'])->assertRedirect('/login');
+        $this->post('/register', ['phone' => '0771234567', 'service_area' => 'Colombo', 'category_ids' => [$category->id], 'name' => 'Sam', 'email' => 'sam@example.test', 'role' => 'provider', 'password' => 'Password123', 'password_confirmation' => 'Password123'])->assertRedirect('/login/verify');
         $this->assertGuest();
         $this->get('/provider/dashboard')->assertRedirect('/login');
+        $code = \Illuminate\Support\Facades\Mail::sent(\App\Mail\LoginOtp::class)->first()->code;
+        $this->post('/login/verify', ['code' => $code])->assertRedirect('/provider/dashboard');
+        $this->get('/dashboard')->assertRedirect('/provider/dashboard');
+        $this->get('/provider/dashboard')->assertOk();
     }
     public function test_wrong_password_does_not_authenticate(): void
     {

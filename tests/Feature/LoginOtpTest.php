@@ -20,7 +20,7 @@ class LoginOtpTest extends TestCase
     }
     private function start(?User $user = null): array
     {
-        $user ??= User::factory()->create();
+        $user ??= User::factory()->unverified()->create();
         $this->post('/login', ['email' => $user->email, 'password' => 'Password123'])->assertRedirect('/login/verify');
         $this->assertGuest();
         $mail = Mail::sent(LoginOtp::class)->last();
@@ -41,7 +41,7 @@ class LoginOtpTest extends TestCase
         $this->assertNull($challenge->fresh()->otp_hash);
         $this->assertNotNull($challenge->fresh()->consumed_at);
         $this->get('/dashboard')->assertRedirect('/customer/dashboard');
-        $this->get('/customer/dashboard')->assertOk()->assertSee('Login verified successfully.');
+        $this->get('/customer/dashboard')->assertOk()->assertSee('Email verified successfully.');
         $this->post('/logout')->assertRedirect('/');
         $this->assertGuest();
         $this->post('/login/verify', ['code' => $code])->assertRedirect('/login/verify');
@@ -49,7 +49,7 @@ class LoginOtpTest extends TestCase
     }
     public function test_invalid_credentials_are_generic_and_do_not_send_mail(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->unverified()->create();
         $responses = [];
         foreach ([$user->email, 'missing@example.test'] as $email) {
             $this->post('/login', ['email' => $email, 'password' => 'incorrect'])->assertSessionHasErrors('email');
@@ -116,7 +116,7 @@ class LoginOtpTest extends TestCase
         $this->withSession(['pending_login' => ['id' => $challenge->id, 'binding' => str_repeat('0', 64)]]);
         $this->post('/login/verify', ['code' => $code])->assertSessionHasErrors('code');
         $this->assertGuest();
-        $other = User::factory()->create();
+        $other = User::factory()->unverified()->create();
         [, $otherCode] = $this->start($other);
         $this->post('/login/verify', ['code' => $code])->assertSessionHasErrors('code');
         $this->post('/login/verify', ['code' => $otherCode])->assertRedirect('/dashboard');
@@ -141,7 +141,7 @@ class LoginOtpTest extends TestCase
     public function test_delivery_failures_and_missing_settings_never_authenticate(): void
     {
         config(['mail.mailers.smtp.password' => null]);
-        $user = User::factory()->create();
+        $user = User::factory()->unverified()->create();
         $this->post('/login', ['email' => $user->email, 'password' => 'Password123'])
             ->assertRedirect('/login/verify')->assertSessionHasErrors('code');
         Mail::assertNothingSent();
@@ -164,13 +164,13 @@ class LoginOtpTest extends TestCase
         $this->post('/login/verify', ['code' => $code])->assertSessionHasErrors('code');
         $this->assertGuest();
     }
-    public function test_account_changes_invalidate_pending_login_and_verification_is_required_every_login(): void
+    public function test_account_changes_invalidate_unverified_pending_login(): void
     {
         [$user, $code] = $this->start();
         $user->forceFill(['suspended_at' => now()])->save();
         $this->post('/login/verify', ['code' => $code])->assertSessionHasErrors('code');
         $this->assertGuest();
-        $user->forceFill(['suspended_at' => null, 'email_verified_at' => now()])->save();
+        $user->forceFill(['suspended_at' => null, 'email_verified_at' => null])->save();
         $this->travel(61)->seconds();
         [, $code] = $this->start($user);
         $this->get('/dashboard')->assertRedirect('/login');
@@ -181,7 +181,7 @@ class LoginOtpTest extends TestCase
     public function test_provider_and_admin_are_redirected_to_their_dashboards(): void
     {
         foreach (['provider', 'admin'] as $role) {
-            [$user, $code] = $this->start(User::factory()->create(['role' => $role]));
+            [$user, $code] = $this->start(User::factory()->unverified()->create(['role' => $role]));
             $this->post('/login/verify', ['code' => $code])->assertRedirect('/dashboard');
             $this->get('/dashboard')->assertRedirect('/'.$role.'/dashboard');
             $this->post('/logout');
@@ -230,7 +230,7 @@ class LoginOtpTest extends TestCase
     public function test_non_delivery_mailers_are_rejected_without_sending_or_logging_codes(): void
     {
         config(['mail.default' => 'log']);
-        $user = User::factory()->create();
+        $user = User::factory()->unverified()->create();
         $this->post('/login', ['email' => $user->email, 'password' => 'Password123'])->assertSessionHasErrors('code');
         Mail::assertNothingSent();
         $this->assertNull(LoginChallenge::first()->otp_hash);
@@ -251,7 +251,7 @@ class LoginOtpTest extends TestCase
     {
         \Illuminate\Support\Facades\Log::spy();
         config(['mail.mailers.smtp.password' => null]);
-        $user = User::factory()->create();
+        $user = User::factory()->unverified()->create();
         $this->post('/login', ['email' => $user->email, 'password' => 'Password123'])->assertSessionHasErrors('code');
         \Illuminate\Support\Facades\Log::shouldHaveReceived('warning')->once()->with('Login OTP delivery blocked.', [
             'reason' => 'smtp_configuration_missing', 'missing_settings' => ['MAIL_PASSWORD'],
@@ -263,7 +263,7 @@ class LoginOtpTest extends TestCase
     {
         \Illuminate\Support\Facades\Log::spy();
         Mail::shouldReceive('to')->once()->andThrow(new \RuntimeException('Failed to authenticate: private diagnostic content must not be logged'));
-        $user = User::factory()->create();
+        $user = User::factory()->unverified()->create();
         $this->post('/login', ['email' => $user->email, 'password' => 'Password123'])->assertSessionHasErrors('code');
         \Illuminate\Support\Facades\Log::shouldHaveReceived('warning')->once()->with('Login OTP delivery failed.', [
             'reason' => 'smtp_authentication_rejected',
@@ -285,7 +285,7 @@ class LoginOtpTest extends TestCase
     }
     public function test_hash_is_persisted_before_the_mail_send_method_is_called(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->unverified()->create();
         Mail::shouldReceive('to')->once()->with($user->email)->andReturnSelf();
         Mail::shouldReceive('send')->once()->with(\Mockery::on(function ($mail) {
             $challenge = LoginChallenge::firstOrFail();
@@ -299,7 +299,7 @@ class LoginOtpTest extends TestCase
     public function test_successful_resend_removes_stale_delivery_errors(): void
     {
         config(['mail.mailers.smtp.password' => null]);
-        $user = User::factory()->create();
+        $user = User::factory()->unverified()->create();
         $this->post('/login', ['email' => $user->email, 'password' => 'Password123'])->assertSessionHasErrors('code');
         config(['mail.mailers.smtp.password' => 'test']);
         $this->travel(61)->seconds();
@@ -317,7 +317,7 @@ class LoginOtpTest extends TestCase
             }
         });
         try {
-            $user = User::factory()->create();
+            $user = User::factory()->unverified()->create();
             $this->post('/login', ['email' => $user->email, 'password' => 'Password123'])->assertSessionHasErrors('code');
             Mail::assertNothingSent();
             $this->assertNull(LoginChallenge::first()->otp_hash);
