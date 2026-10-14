@@ -1,0 +1,158 @@
+{
+  "source": "Original AI-generated service photographs, created with the built-in image_gen tool. No third-party stock images or external image URLs.",
+  "sizes": {
+    "default": [
+      960,
+      540
+    ],
+    "small": [
+      480,
+      270
+    ]
+  },
+  "assets": [
+    {
+      "image": "category-electrical.webp",
+      "title": "Electrical",
+      "category_slug": "electrical",
+      "alt": "Electrician inspecting a home electrical panel.",
+      "prompt": "Use case: photorealistic-natural. Asset type: HomeServices marketplace service-card photograph. Primary request: An electrician in navy workwear with insulated tools carefully checking a closed-off domestic electrical panel in a bright tidy home. Hands and tools visibly credible; power isolated; calm professional service. Style: premium natural editorial photography, consistent collection of realistic home service professionals in warm off-white residential interiors or lush gardens, restrained teal and dark navy workwear, authentic textures and tools. Lighting: soft natural daylight, warm clean highlights, subtle shadows. Composition: landscape 16:9, medium-wide photographic framing, main worker and task centrally composed, generous safe crop around subject; no text overlays, no graphics. Quality: sharp realistic hands and plausible tools. Constraints: one coherent scene, no logos, no lettering, no watermarks, no collage, no exaggerated staged smiles, no illustration.",
+      "description": "Local electrical expertise for wiring, lighting and everyday repairs, helping keep your home safe and comfortable.",
+      "source": "OpenAI built-in image generation; generated for this project on 2026-10-11.",
+      "source_filename": "exec-2479ca83-38b5-4fa1-9326-cf8d59b17439.png"
+    },
+    {
+      "image": "category-plumbing.webp",
+      "title": "Plumbing",
+      "category_slug": "plumbing",
+      "alt": "Plumber repairing pipes beneath a kitchen sink.",
+      "prompt": "Use case: photorealistic-natural. Asset type: HomeServices marketplace service-card photograph. Primary request: A professional plumber in navy workwear kneeling beside a kitchen sink, using a wrench on visible water pipes beneath a white cabinet. Clean well-kept home, realistic plumbing joints. Style: premium natural editorial photography, consistent collection of realistic home service professionals in warm off-white residential interiors or lush gardens, restrained teal and dark navy workwear, authentic textures and tools. Lighting: soft natural daylight, warm clean highlights, subtle shadows. Composition: landscape 16:9, medium-wide photographic framing, main worker and task centrally composed, generous safe crop around subject; no text overlays, no graphics. Quality: sharp realistic hands and plausible tools. Constraints: one coherent scene, no logos, no lettering, no watermarks, no collage, no exaggerated staged smiles, no illustration.",
+      "description": "Professional help with leaks, taps and pipework to keep water flowing reliably throughout your home.",
+      "source": "OpenAI built-in image generation; generated for this project on 2026-10-11.",
+      "source_filename": "exec-476667b5-27e4-468e-9665-052bbe10e59e.png"
+    },
+    {
+      "image": "category-cleaning.webp",
+      "title": "Cleaning",
+      "category_slug": "cleaning",
+      "alt": "Professional cleaner caring for a bright living room.",
+      "prompt": "Use case: photorealistic-natural. Asset type: HomeServices marketplace service-card photograph. Primary request: A professional home cleaner in teal workwear wiping a coffee table in a naturally lit modern living room; neat sofa, bucket and clean cloths nearby. Style: premium natural editorial photography, consistent collection of realistic home service professionals in warm off-white residential interiors or lush gardens, restrained teal and dark navy workwear, authentic textures and tools. Lighting: soft natural daylight, warm clean highlights, subtle shadows. Composition: landscape 16:9, medium-wide photographic framing, main worker and task centrally composed, generous safe crop around subject; no text overlays, no graphics. Quality: sharp realistic hands and plausible tools. Constraints: one coherent scene, no logos, no lettering, no watermarks, no collage, no exaggerated staged smiles, no illustration.",
+      "description": "Careful cleaning for living spaces, surfaces and everyday mess, leaving your home fresh and welcoming.",
+      "source": "OpenAI built-in image generation; generated for this project on 2026-10-11.",
+      "source_filename": "exec-cf859da0-92a6-42a2-9e7d-51e14aad489e.png"
+    },
+    {
+      "image": "category-painting.webp",
+      "title": "Painting",
+      "category_slug": "painting",
+      "alt": "Painter applying a fresh coat to an interior wall.",
+      "prompt": "Use case: photorealistic-natural. Asset type: HomeServices marketplace service-card photograph. Primary request: A professional decorator in navy workwear rolling a fresh warm off-white coat onto an interior wall; edges carefully masked, protected floor, paint tray nearby. A little of the unpainted wall remains visible. Style: premium natural editorial photography, consistent collection of realistic home service professionals in warm off-white residential interiors or lush gardens, restrained teal and dark navy workwear, authentic textures and tools. Lighting: soft natural daylight, warm clean highlights, subtle shadows. Composition: landscape 16:9, medium-wide photographic framing, main worker and task centrally composed, generous safe crop around subject; no text overlays, no graphics. Quality: sharp realistic hands and plausible tools. Constraints: one coherent scene, no logos, no lettering, no watermarks, no collage, no exaggerated staged smiles, no illustration.",
+      "description": "Professional painting and finishing to refresh your walls, protect surfaces and bring a new feel to your home.",
+      "source": "OpenAI built-in image generation; generated for this project on 2026-10-11.",
+      "source_filename": "exec-2a46f734-3763-44dc-9a27-733d9a8f6aa1.png"
+    },
+    {
+      "image": "category-ac-repair.webp",
+      "title": "AC Repair",
+      "category_slug": "ac-repair",
+      "alt": "Technician inspecting a wall-mounted air conditioner.",
+      "prompt": "Use case: photorealistic-natural. Asset type: HomeServices marketplace service-card photograph. Primary request: A qualified technician in navy workwear inspecting a wall-mounted split air conditioner in a bright modern home; open front cover and realistic hand tools; sturdy platform, safe comfortable working height. Style: premium natural editorial photography, consistent collection of realistic home service professionals in warm off-white residential interiors or lush gardens, restrained teal and dark navy workwear, authentic textures and tools. Lighting: soft natural daylight, warm clean highlights, subtle shadows. Composition: landscape 16:9, medium-wide photographic framing, main worker and task centrally composed, generous safe crop around subject; no text overlays, no graphics. Quality: sharp realistic hands and plausible tools. Constraints: one coherent scene, no logos, no lettering, no watermarks, no collage, no exaggerated staged smiles, no illustration.",
+      "description": "Professional air conditioning diagnosis and repair to restore reliable cooling and everyday comfort.",
+      "source": "OpenAI built-in image generation; generated for this project on 2026-10-11.",
+      "source_filename": "exec-dfb9726c-d713-42d7-902b-a0a0ba63a6b2.png"
+    },
+    {
+      "image": "category-gardening.webp",
+      "title": "Gardening",
+      "category_slug": "gardening",
+      "alt": "Gardener tending healthy plants in a home garden.",
+      "prompt": "Use case: photorealistic-natural. Asset type: HomeServices marketplace service-card photograph. Primary request: A professional gardener in teal workwear and gloves tending lush garden beds beside a well-kept tropical home, pruning with small shears; natural greenery and simple clean tools. Style: premium natural editorial photography, consistent collection of realistic home service professionals in warm off-white residential interiors or lush gardens, restrained teal and dark navy workwear, authentic textures and tools. Lighting: soft natural daylight, warm clean highlights, subtle shadows. Composition: landscape 16:9, medium-wide photographic framing, main worker and task centrally composed, generous safe crop around subject; no text overlays, no graphics. Quality: sharp realistic hands and plausible tools. Constraints: one coherent scene, no logos, no lettering, no watermarks, no collage, no exaggerated staged smiles, no illustration.",
+      "description": "Experienced care for plants, lawns and garden beds to keep your outdoor spaces healthy and inviting.",
+      "source": "OpenAI built-in image generation; generated for this project on 2026-10-11.",
+      "source_filename": "exec-077af7cb-3a30-40ea-894f-579dc6a55d09.png"
+    },
+    {
+      "image": "subcategory-general-gardening.webp",
+      "title": "General Gardening",
+      "category_slug": "gardening",
+      "subcategory_key": "general gardening",
+      "alt": "Gardener planting and caring for a home garden bed.",
+      "prompt": "Use case: photorealistic-natural. Asset type: HomeServices marketplace service-card photograph. Primary request: A gardener in navy workwear and gloves planting a young leafy plant in a neat tropical home's garden bed; soil, small hand trowel, healthy greenery; focus on careful hands-on garden care. Style: premium natural editorial photography, consistent collection of realistic home service professionals in warm off-white residential interiors or lush gardens, restrained teal and dark navy workwear, authentic textures and tools. Lighting: soft natural daylight, warm clean highlights, subtle shadows. Composition: landscape 16:9, medium-wide photographic framing, main worker and task centrally composed, generous safe crop around subject; no text overlays, no graphics. Quality: sharp realistic hands and plausible tools. Constraints: one coherent scene, no logos, no lettering, no watermarks, no collage, no exaggerated staged smiles, no illustration.",
+      "description": "Routine plant care, pruning and garden upkeep to keep your outdoor spaces tidy, healthy and welcoming.",
+      "source": "OpenAI built-in image generation; generated for this project on 2026-10-11.",
+      "source_filename": "exec-acd465b2-831b-45d2-87ff-a65eb3286550.png"
+    },
+    {
+      "image": "subcategory-general-painting.webp",
+      "title": "General Painting",
+      "category_slug": "painting",
+      "subcategory_key": "general painting",
+      "alt": "Decorator carefully painting interior trim.",
+      "prompt": "Use case: photorealistic-natural. Asset type: HomeServices marketplace service-card photograph. Primary request: A skilled painter in teal workwear using a brush to paint neat trim beside a freshly painted warm neutral wall in a home; protected floor, drop cloth, clean equipment, credible brush strokes. Style: premium natural editorial photography, consistent collection of realistic home service professionals in warm off-white residential interiors or lush gardens, restrained teal and dark navy workwear, authentic textures and tools. Lighting: soft natural daylight, warm clean highlights, subtle shadows. Composition: landscape 16:9, medium-wide photographic framing, main worker and task centrally composed, generous safe crop around subject; no text overlays, no graphics. Quality: sharp realistic hands and plausible tools. Constraints: one coherent scene, no logos, no lettering, no watermarks, no collage, no exaggerated staged smiles, no illustration.",
+      "description": "Careful surface preparation, painting and finishing for a fresh, lasting result throughout your home.",
+      "source": "OpenAI built-in image generation; generated for this project on 2026-10-11.",
+      "source_filename": "exec-ee5e06cf-454f-40ea-a43e-64288f53d877.png"
+    },
+    {
+      "image": "subcategory-general-ac-repair.webp",
+      "title": "General AC Repair",
+      "category_slug": "ac-repair",
+      "subcategory_key": "general ac repair",
+      "alt": "Technician diagnosing a split air conditioner.",
+      "prompt": "Use case: photorealistic-natural. Asset type: HomeServices marketplace service-card photograph. Primary request: A qualified technician in navy workwear diagnosing a wall-mounted split air conditioner, front cover open; holding a small diagnostic meter next to the indoor unit; tidy naturally lit residential room, sturdy step platform. Style: premium natural editorial photography, consistent collection of realistic home service professionals in warm off-white residential interiors or lush gardens, restrained teal and dark navy workwear, authentic textures and tools. Lighting: soft natural daylight, warm clean highlights, subtle shadows. Composition: landscape 16:9, medium-wide photographic framing, main worker and task centrally composed, generous safe crop around subject; no text overlays, no graphics. Quality: sharp realistic hands and plausible tools. Constraints: one coherent scene, no logos, no lettering, no watermarks, no collage, no exaggerated staged smiles, no illustration.",
+      "description": "Professional diagnosis and repair of air conditioning systems to restore efficient cooling and reliable comfort.",
+      "source": "OpenAI built-in image generation; generated for this project on 2026-10-11.",
+      "source_filename": "exec-114a77fb-43e8-4b91-8170-5a79e02b14f6.png"
+    },
+    {
+      "image": "subcategory-general-electrical.webp",
+      "title": "General Electrical",
+      "category_slug": "electrical",
+      "subcategory_key": "general electrical",
+      "alt": "Electrician repairing a household wall socket.",
+      "prompt": "Use case: photorealistic-natural. Asset type: HomeServices marketplace service-card photograph. Primary request: A professional electrician in teal workwear and insulated gloves fitting a household wall socket with insulated hand tools. De-energized wiring and isolated circuit, neat modern room, credible realistic details. Style: premium natural editorial photography, consistent collection of realistic home service professionals in warm off-white residential interiors or lush gardens, restrained teal and dark navy workwear, authentic textures and tools. Lighting: soft natural daylight, warm clean highlights, subtle shadows. Composition: landscape 16:9, medium-wide photographic framing, main worker and task centrally composed, generous safe crop around subject; no text overlays, no graphics. Quality: sharp realistic hands and plausible tools. Constraints: one coherent scene, no logos, no lettering, no watermarks, no collage, no exaggerated staged smiles, no illustration.",
+      "description": "Local help with electrical faults, sockets and household wiring, with careful attention to safe, reliable repairs.",
+      "source": "OpenAI built-in image generation; generated for this project on 2026-10-11.",
+      "source_filename": "exec-66af7d8d-1457-4c06-9148-f9bc96b9e14e.png"
+    },
+    {
+      "image": "subcategory-general-plumbing.webp",
+      "title": "General Plumbing",
+      "category_slug": "plumbing",
+      "subcategory_key": "general plumbing",
+      "alt": "Plumber repairing a bathroom basin tap.",
+      "prompt": "Use case: photorealistic-natural. Asset type: HomeServices marketplace service-card photograph. Primary request: A skilled plumber in teal workwear using an adjustable wrench to repair a bathroom basin tap in a clean tiled home bathroom; focus on hands, fixture and professional tools. Style: premium natural editorial photography, consistent collection of realistic home service professionals in warm off-white residential interiors or lush gardens, restrained teal and dark navy workwear, authentic textures and tools. Lighting: soft natural daylight, warm clean highlights, subtle shadows. Composition: landscape 16:9, medium-wide photographic framing, main worker and task centrally composed, generous safe crop around subject; no text overlays, no graphics. Quality: sharp realistic hands and plausible tools. Constraints: one coherent scene, no logos, no lettering, no watermarks, no collage, no exaggerated staged smiles, no illustration.",
+      "description": "Professional repairs for leaking pipes, taps and everyday plumbing problems to restore dependable water flow.",
+      "source": "OpenAI built-in image generation; generated for this project on 2026-10-11.",
+      "source_filename": "exec-4f642bcd-bf54-4bbc-93f3-4f1502647e8c.png"
+    },
+    {
+      "image": "subcategory-general-cleaning.webp",
+      "title": "General Cleaning",
+      "category_slug": "cleaning",
+      "subcategory_key": "general cleaning",
+      "alt": "Professional cleaner vacuuming a living room rug.",
+      "prompt": "Use case: photorealistic-natural. Asset type: HomeServices marketplace service-card photograph. Primary request: A professional cleaner in navy workwear using a vacuum cleaner on a rug in a bright tidy home living room; soft neutral furnishings and realistic equipment. Style: premium natural editorial photography, consistent collection of realistic home service professionals in warm off-white residential interiors or lush gardens, restrained teal and dark navy workwear, authentic textures and tools. Lighting: soft natural daylight, warm clean highlights, subtle shadows. Composition: landscape 16:9, medium-wide photographic framing, main worker and task centrally composed, generous safe crop around subject; no text overlays, no graphics. Quality: sharp realistic hands and plausible tools. Constraints: one coherent scene, no logos, no lettering, no watermarks, no collage, no exaggerated staged smiles, no illustration.",
+      "description": "Thorough cleaning of rooms, surfaces and floors to leave your home fresh, tidy and ready to enjoy.",
+      "source": "OpenAI built-in image generation; generated for this project on 2026-10-11.",
+      "source_filename": "exec-3ae2f638-f5c8-4ecc-b8c9-05e6eef95195.png"
+    },
+    {
+      "image": "subcategory-ac-servicing-cleaning.webp",
+      "title": "General AC Servicing & Cleaning",
+      "category_slug": "ac-repair",
+      "subcategory_key": "general ac servicing & cleaning",
+      "alt": "Technician cleaning an air conditioner filter and coil.",
+      "prompt": "Use case: photorealistic-natural. Asset type: HomeServices marketplace service-card photograph. Primary request: A qualified air conditioning technician in teal workwear cleaning the filter and indoor coil of a wall-mounted split AC unit with a soft cleaning brush; AC front cover open, protective cleaning catch bag below, neat home interior, safe sturdy step platform. Style: premium natural editorial photography, consistent collection of realistic home service professionals in warm off-white residential interiors or lush gardens, restrained teal and dark navy workwear, authentic textures and tools. Lighting: soft natural daylight, warm clean highlights, subtle shadows. Composition: landscape 16:9, medium-wide photographic framing, main worker and task centrally composed, generous safe crop around subject; no text overlays, no graphics. Quality: sharp realistic hands and plausible tools. Constraints: one coherent scene, no logos, no lettering, no watermarks, no collage, no exaggerated staged smiles, no illustration.",
+      "description": "Complete AC maintenance, including filter cleaning, coil washing, drainage checks and airflow inspection.",
+      "source": "OpenAI built-in image generation; generated for this project on 2026-10-11.",
+      "source_filename": "exec-edec6fd7-168d-4de4-87fb-0eeee6d34429.png"
+    }
+  ],
+  "default_asset": {
+    "image": "home-services.webp",
+    "alt": "Professional home service tools ready for work.",
+    "prompt": "Use case: photorealistic-natural. Asset type: HomeServices marketplace default service photograph for newly added categories. A professional home service toolkit neatly arranged on a workbench in a bright warm off-white home interior: navy canvas tool bag, clean adjustable wrench, screwdriver, tape measure, protective gloves and small brush. Soft natural daylight, restrained teal and navy details, premium editorial realism, landscape 16:9, central composition with generous crop-safe margins. No people, no logos, no readable text, no watermark, no collage. Sharp authentic tools and textures.",
+    "source_filename": "exec-146c0ac1-238a-4e9b-b4b5-e59266930412.png"
+  }
+}

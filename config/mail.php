@@ -14,7 +14,7 @@ return [
         'transport' => 'smtp', 'scheme' => $scheme,
         'host' => env('MAIL_HOST'), 'port' => (int) env('MAIL_PORT', 587),
         'username' => env('MAIL_USERNAME'), 'password' => env('MAIL_PASSWORD'),
-        'timeout' => 15, 'require_tls' => true,
+        'timeout' => 15, 'require_tls' => (bool) env('MAIL_REQUIRE_TLS', true),
         'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url(env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
     ]],
     'from' => ['address' => env('MAIL_FROM_ADDRESS'), 'name' => env('MAIL_FROM_NAME', env('APP_NAME', 'Home Services'))],

@@ -1,5 +1,8 @@
 # Home Services Booking Platform
 
+For isolated Laravel/MySQL/Mailpit development on Ubuntu or Windows, see
+[Docker setup and teammate instructions](docs/11-docker-development.md).
+
 University Software Engineering mini-project using Laravel 13, PHP 8.3+, MySQL, and Blade. No Node build step is needed for this increment.
 
 ## Current increment

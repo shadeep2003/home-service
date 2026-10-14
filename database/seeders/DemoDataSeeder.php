@@ -39,7 +39,7 @@ class DemoDataSeeder extends Seeder
                     ]);
                     $slugs = [$services[$index]];
                     if (in_array($index, [1, 2])) { $slugs[] = 'ac-repair'; }
-                    $user->serviceCategories()->attach(ServiceCategory::whereIn('slug', $slugs)->pluck('id'));
+                    \App\Services\ProviderServices::sync($user, ServiceCategory::whereIn('slug', $slugs)->pluck('id')->all());
                 }
             } else { $customers[] = $user; }
             if ($created && $index % 2 === 0) {

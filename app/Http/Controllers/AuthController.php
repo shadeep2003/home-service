@@ -23,7 +23,7 @@ class AuthController
             $user->save();
             if ($user->role === Role::Provider) {
                 $user->providerProfile()->create(collect($data)->only(['phone', 'service_area', 'biography', 'experience_years', 'working_hours'])->all());
-                $user->serviceCategories()->attach($data['category_ids']);
+                \App\Services\ProviderServices::sync($user, $data['category_ids']);
             }
             return $user;
         });

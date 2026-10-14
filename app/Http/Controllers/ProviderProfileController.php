@@ -19,7 +19,7 @@ class ProviderProfileController
         $data = $request->validated();
         \App\Services\AccountProfile::save($request->user(), $data, function () use ($request, $data) {
             $request->user()->providerProfile()->updateOrCreate([], collect($data)->except(['category_ids', 'name', 'email', 'photo'])->all());
-            $request->user()->serviceCategories()->sync($data['category_ids']);
+            \App\Services\ProviderServices::sync($request->user(), $data['category_ids']);
         });
         return redirect()->route('provider.dashboard')->with('status', 'Profile updated.');
     }

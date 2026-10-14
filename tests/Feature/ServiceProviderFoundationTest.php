@@ -83,27 +83,27 @@ class ServiceProviderFoundationTest extends TestCase
         foreach ([[$electrical, 'Electrical Expert'], [$plumbing, 'Plumbing Expert']] as [$category, $name]) {
             $provider = User::factory()->create(['name' => $name, 'role' => 'provider']);
             $provider->providerProfile()->create(['phone' => '0771234567', 'service_area' => 'Kandy']);
-            $provider->serviceCategories()->attach($category);
+            \App\Services\ProviderServices::sync($provider, [$category->id]);
         }
-        $this->actingAs(User::factory()->create())->get('/services/electrical')->assertOk()->assertSee('Electrical Expert')->assertSee('Kandy')->assertDontSee('Plumbing Expert');
+        $this->actingAs(User::factory()->create())->get('/services/electrical/1')->assertOk()->assertSee('Electrical Expert')->assertSee('Kandy')->assertDontSee('Plumbing Expert');
     }
     public function test_directory_shows_provider_work_state_and_contact_links(): void
     {
         $category = $this->category();
         $provider = User::factory()->create(['name' => 'Local Expert', 'role' => 'provider']);
-        $provider->serviceCategories()->attach($category);
+        \App\Services\ProviderServices::sync($provider, [$category->id]);
         $profile = $provider->providerProfile()->create([
             'phone' => '077 123 4567', 'service_area' => 'Kandy',
             'is_available' => true, 'is_working' => true,
         ]);
-        $this->get('/services/electrical')->assertOk()
+        $this->get('/services/electrical/1')->assertOk()
             ->assertSee('Currently working')->assertSee('tel:+94771234567', false)
             ->assertSee('https://wa.me/94771234567?text=', false)
             ->assertSee('Status set by provider.')->assertDontSee('Available for enquiries');
         $profile->update(['is_working' => false, 'is_available' => false]);
-        $this->get('/services/electrical')->assertSee('Currently unavailable');
+        $this->get('/services/electrical/1')->assertSee('Currently unavailable');
         $profile->update(['is_available' => true]);
-        $this->get('/services/electrical')->assertSee('Available for enquiries');
+        $this->get('/services/electrical/1')->assertSee('Available for enquiries');
     }
 
     public function test_provider_can_update_working_state(): void
@@ -131,7 +131,7 @@ class ServiceProviderFoundationTest extends TestCase
     public function test_empty_states_render(): void
     {
         $this->get('/services')->assertOk()->assertSee('No active service categories');
-        $this->category(); $this->get('/services/electrical')->assertOk()->assertSee('No providers yet');
+        $this->category(); $this->get('/services/electrical')->assertOk()->assertSee('No subcategories yet');
     }
     public function test_provider_updates_own_profile_and_replaces_categories(): void
     {

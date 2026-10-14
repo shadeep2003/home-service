@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 @section('title', 'Customer dashboard')
 @section('content')
 @if(session('status'))<p class="profile-save-notice" role="status">{{ session('status') }}</p>@endif

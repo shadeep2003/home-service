@@ -54,3 +54,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile/edit', [\App\Http\Controllers\AccountProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [\App\Http\Controllers\AccountProfileController::class, 'update'])->name('profile.update');
 });
+
+Route::get('/services/{category:slug}/{subcategory}', [PublicPageController::class, 'subcategory'])->name('services.subcategory');
+Route::middleware(['auth', 'role:provider'])->prefix('provider')->name('provider.')->group(function () {
+    Route::resource('subcategories', \App\Http\Controllers\ServiceSubcategoryController::class)->only(['index', 'store', 'update', 'destroy']);
+});

@@ -49,11 +49,11 @@ class ProviderReviewsTest extends TestCase
     {
         $provider = $this->provider();
         $category = ServiceCategory::create(['name' => 'Electrical', 'slug' => 'electrical', 'is_active' => true]);
-        $provider->serviceCategories()->attach($category);
+        \App\Services\ProviderServices::sync($provider, [$category->id]);
         foreach ([5, 3] as $rating) {
             $this->actingAs(User::factory()->create())->post(route('providers.reviews.store', $provider), ['rating' => $rating, 'comment' => '<script>alert(1)</script>'])->assertRedirect();
         }
-        $this->get('/services/electrical')->assertOk()->assertSee('4.0 / 5')->assertSee('(2 reviews)');
+        $this->get('/services/electrical/1')->assertOk()->assertSee('4.0 / 5')->assertSee('(2 reviews)');
         $this->get(route('providers.reviews', $provider))->assertOk()->assertSee('<script>alert(1)</script>')->assertDontSee('<script>alert(1)</script>', false);
     }
 }

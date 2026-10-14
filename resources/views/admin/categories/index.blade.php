@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 @section('title', 'Manage service categories')
 @section('content')
 <section class="dashboard-header"><p class="eyebrow">ADMIN WORKSPACE</p><h1>Service categories</h1><a class="button" href="{{ route('admin.categories.create') }}">Add category</a></section>

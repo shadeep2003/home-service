@@ -14,6 +14,11 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(ServiceCategory::class, 'provider_services', 'provider_id', 'service_category_id')->withTimestamps();
     }
+    public function serviceSubcategories(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(ServiceSubcategory::class, 'provider_subcategories', 'provider_id', 'service_subcategory_id')->withTimestamps();
+    }
+    public function ownedSubcategories() { return $this->hasMany(ServiceSubcategory::class, 'owner_id'); }
     public function reviews(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(ProviderReview::class, 'provider_id');

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 @section('title', 'Edit profile')
 @section('content')
 <section class="profile-editor"><header class="profile-editor-header"><a href="{{ route('dashboard') }}">← Back to dashboard</a><p class="eyebrow">YOUR ACCOUNT</p><h1>Edit your profile</h1><p>Manage your personal details and profile picture in one place.</p></header><div class="profile-editor-body">

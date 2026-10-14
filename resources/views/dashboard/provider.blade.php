@@ -1,7 +1,7 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 @section('title', 'Provider dashboard')
 @section('content')
-<section class="dashboard-header"><p class="eyebrow">PROVIDER WORKSPACE</p><h1>Your professional profile, {{ $provider->name }}.</h1><a class="button" href="{{ route('provider.profile.edit') }}">Edit profile</a></section>
+<section class="dashboard-header"><p class="eyebrow">PROVIDER WORKSPACE</p><h1>Your professional profile, {{ $provider->name }}.</h1><a class="button" href="{{ route('provider.profile.edit') }}">Edit profile</a> <a class="button secondary" href="{{ route('provider.subcategories.index') }}">Manage subcategories</a></section>
 @if(session('status'))<p class="profile-save-notice" role="status">{{ session('status') }}</p>@endif
 <section class="profile-overview" aria-labelledby="profile-overview-title">
     <header class="profile-overview-header">

@@ -3,3 +3,6 @@
 /.phpunit.cache/
 /storage/*.key
 /bootstrap/cache/*.php
+/.env.docker
+/.phpunit.result.cache
+/compose.hub.yaml

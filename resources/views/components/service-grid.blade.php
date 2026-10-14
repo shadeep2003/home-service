@@ -1,8 +1,8 @@
 @props(['categories'])
-<div class="service-grid">
+<div class="service-grid services-grid">
 @forelse ($categories as $category)
-<x-service-card :category="$category" />
+<x-service-card :title="$category->name" :description="$category->description" :image="$category->imageUrl()" :image-alt="$category->imageAlt()" :image-srcset="$category->imageSrcset()" :url="route('services.category', $category)" action="Explore services" label="SERVICE CATEGORY" />
 @empty
-<div class="panel"><h3>Services are coming soon</h3><p>No active service categories are available yet. Please check back soon.</p></div>
+<x-service-empty-state title="Services are coming soon" description="No active service categories are available yet. Please check back soon." :url="route('home')" action="Back to home" />
 @endforelse
 </div>

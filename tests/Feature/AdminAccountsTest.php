@@ -13,15 +13,15 @@ class AdminAccountsTest extends TestCase
         $provider = User::factory()->create(['role' => 'provider']);
         $provider->providerProfile()->create(['phone' => '0771234567', 'service_area' => 'Galle']);
         $category = ServiceCategory::create(['name' => 'Electrical', 'slug' => 'electrical', 'is_active' => true]);
-        $provider->serviceCategories()->attach($category);
+        \App\Services\ProviderServices::sync($provider, [$category->id]);
         $this->actingAs($admin)->get('/admin/dashboard')->assertOk()->assertSee($provider->email);
         $this->patch(route('admin.accounts.update', $provider), ['action' => 'suspend'])->assertRedirect();
         $this->assertNotNull($provider->fresh()->suspended_at);
-        $this->get('/services/electrical')->assertDontSee($provider->name);
+        $this->get('/services/electrical/1')->assertDontSee($provider->name);
         $this->get(route('providers.reviews', $provider))->assertNotFound();
         $this->patch(route('admin.accounts.update', $provider), ['action' => 'reactivate'])->assertRedirect();
         $this->assertNull($provider->fresh()->suspended_at);
-        $this->get('/services/electrical')->assertSee($provider->name);
+        $this->get('/services/electrical/1')->assertSee($provider->name);
         $this->patch(route('admin.accounts.update', $admin), ['action' => 'suspend'])->assertForbidden();
     }
     public function test_other_roles_cannot_manage_accounts_and_suspended_sessions_are_revoked(): void

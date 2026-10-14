@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 @section('title', $category->exists ? 'Edit category' : 'Add category')
 @section('content')
 <section class="auth-card"><h1>{{ $category->exists ? 'Edit category' : 'Add category' }}</h1>

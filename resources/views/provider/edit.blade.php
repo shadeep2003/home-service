@@ -1,9 +1,9 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 @section('title', 'Edit professional profile')
 @section('content')
 <section class="profile-editor">
 <header class="profile-editor-header"><a href="{{ route('provider.dashboard') }}">← Back to dashboard</a><p class="eyebrow">YOUR PROFESSIONAL PROFILE</p><h1>Edit professional profile</h1><p>Help customers get to know you. Keep your services, contact details and availability up to date.</p></header>
-<div class="profile-editor-body">
+<p><a href="{{ route('provider.subcategories.index') }}">Manage your specific service subcategories →</a></p><div class="profile-editor-body">
 <form method="POST" action="{{ route('provider.profile.update') }}" enctype="multipart/form-data">@csrf @method('PUT')
 <x-personal-fields :user="$provider" />
 <x-provider-fields :categories="$categories" :profile="$provider->providerProfile" :selected="$provider->serviceCategories->modelKeys()" />
